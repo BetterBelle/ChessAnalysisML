@@ -14,13 +14,31 @@
         \maketitle 
     \end{singlespace}
 
+    \section{TODO}
+    Side note: I have text wrapping on in case the lines go super far off screen, that's why.
+
+    References if needed. I assume we'll use APA or something. It's pretty easy to do it in LaTeX. I'll have to look it up though, but I know a few people who've done it before.
+
     \section{Problem Statement}
 
-    Something about knowledge discovery for chess. People want games to study, but don't want all the boring standard stuff.
+    In this era, there is a massive amount of data collected in a large variety of different topics, of which lots of information can be extracted. The issue here comes with the fact that we cannot simply extract the information by visual inspection. There is simply too much data. One such domain that contains a large amount of data is the game of chess. Many players like to study chess games to try and improve their play, but it's very hard to find games that are relevant or interesting to learn from. Although there are many famous known games such as the Opera game of Paul Morphy vs Duke Karl or Robert Fischer vs Boris Spassky's game 6 from the 1972 world championship match, these are usually kept as beginner studies. Also, the fact that they are already well known doesn't necessarily help us discover anything new. On top of these numerous known games, surely there are many more games that you could learn from. In fact, the website lichess.org logged 68,027,862 games at all levels of play in September of 2020 alone. Some of these could be interesting to study, irrespective of the players ratings not being at the level of Grandmaster. All of this to say, there must be support from algorithms or machine learning techniques to be able to filter out homogenous or uninteresting games from others that stand out as far more intriguing, or to group games of interest together to be able to study.
 
     \section{Problem Analysis}
 
-    Probably some statements from the paper we found.
+    Information from the paper;
+
+    Unsupervised:
+
+        They used only 3000 GM games, this is good but we can do better. Lichess database has 1.5 Billion games available to us. Although they are at faster speeds. Standard FIDE clocks are 90+30, 30 minutes added at move 40. The slowest standard lichess game is 30+20. However, we can definitely filter our games because we have access to these. 
+
+        The distance function. This is fundamentally good, but evaluating chess games on only one dimension to try and group or find outliers is not that telling. Why? Well:
+
+        \begin{enumerate}
+            \item Chess Openings (ECO Codes): Games with similar ECO codes will by default be similar. For example, ECO codes B20-B99 are all different variations of which the first moves are 1. e4 c5. This is relevant because if, for example, a game with opening B20 (Sicilian Defense) somehow has a similar distance than multiple games with code C53 (Giuoco Piano; 1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. c3), that game could turn out to be interesting. 
+            \item Player rating (ELO): With our data, games will be spread out over multiple different skill levels. Because of this, it is important to sort our games by skill level 
+            \item Game Quality: It is possible to be able to sort our games by the "quality" of the game; that is we would define a function that looks at a move and determines whether it is good or bad, using an existing chess engine. 
+            \item Game Clock: Some games also have not only the total time for the game, but also have the amount of time a player took per move (starting April 2017 on Lichess). This information can also be used to filter out games. For example, you may not want to look at games in Bullet format (1 minute total to make all moves). But if you want to improve in that format specifically, this might actually be something of value.
+        \end{enumerate}
 
     \section{Literature Review}
 
@@ -28,8 +46,7 @@
 
     \section{Subproblems, Statement and Analysis}
 
-    We can probably mention that we plan on possibly going above and beyond, which is why we have the above and beyond piece 
-    values as a subproblem.
+    We can probably mention that we plan on possibly going above and beyond, which is why we have the above and beyond piece values as a subproblem.
 
     \section{Algorithmic Sketch, Illustration of Solution}
 
