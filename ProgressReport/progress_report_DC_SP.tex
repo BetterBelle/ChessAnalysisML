@@ -21,11 +21,17 @@
 
     \section{Problem Statement}
 
-    In this era, there is a massive amount of data collected in a large variety of different topics, of which lots of information can be extracted. The issue here comes with the fact that we cannot simply extract the information by visual inspection. There is simply too much data. One such domain that contains a large amount of data is the game of chess. Many players like to study chess games to try and improve their play, but it's very hard to find games that are relevant or interesting to learn from. Although there are many famous known games such as the Opera game of Paul Morphy vs Duke Karl or Robert Fischer vs Boris Spassky's game 6 from the 1972 world championship match, these are usually kept as beginner studies. Also, the fact that they are already well known doesn't necessarily help us discover anything new. On top of these numerous known games, surely there are many more games that you could learn from. In fact, the website lichess.org logged 68,027,862 games at all levels of play in September of 2020 alone. Some of these could be interesting to study, irrespective of the players ratings not being at the level of Grandmaster. All of this to say, there must be support from algorithms or machine learning techniques to be able to filter out homogenous or uninteresting games from others that stand out as far more intriguing, or to group games of interest together to be able to study.
+    In this era, there is a massive amount of data collected in a large variety of different topics, of which lots of information can be extracted. The issue here comes with the fact that we cannot simply extract the information by visual inspection. There is simply too much data. One such domain that contains a large amount of data is the game of chess. Many players like to study chess games to try and improve their play, but it's very hard to find games that are relevant or interesting to learn from amidst the plethora of games to choose from. Although there are many famous known games such as the Opera game of Paul Morphy vs Duke Karl or game 6 from the 1972 world championship match between Robert Fischer vs Boris Spassky, these are usually kept as beginner studies. Also, the fact that they are already well known doesn't necessarily help us discover anything new. On top of these numerous known games, surely there are many more games that you could learn from. In fact, the website lichess.org logged 68,027,862 games at all levels of play in September of 2020 alone. Some of these could be interesting to study, irrespective of the players ratings not being at the level of Grandmaster. All of this to say, there must be support from algorithms or machine learning techniques to be able to group similar games of interest together, or show games that lie far outside the norm, which could be interesting studies.
 
     \section{Problem Analysis}
 
-    Information from the paper;
+    In order to tackle this problem, we must try and quantify what makes a game more or less similar to others and perhaps what other parameters might be used to determine whether a game would be worth studying or not. (Information from the paper inserted here with their distance function, or how they did the supervised version.)
+
+    \section{Literature Review}
+
+    $https://www.chessprogramming.org/Point_Value_by_Regression_Analysis$
+
+    ^^ Very important for piece value changes.
 
     Unsupervised:
 
@@ -39,10 +45,6 @@
             \item Game Quality: It is possible to be able to sort our games by the "quality" of the game; that is we would define a function that looks at a move and determines whether it is good or bad, using an existing chess engine. 
             \item Game Clock: Some games also have not only the total time for the game, but also have the amount of time a player took per move (starting April 2017 on Lichess). This information can also be used to filter out games. For example, you may not want to look at games in Bullet format (1 minute total to make all moves). But if you want to improve in that format specifically, this might actually be something of value.
         \end{enumerate}
-
-    \section{Literature Review}
-
-    Find some stuff about changing the piece values.
 
     \section{Subproblems, Statement and Analysis}
 
