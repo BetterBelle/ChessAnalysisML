@@ -1,8 +1,12 @@
 \documentclass[12pt]{article}
 \usepackage[a4paper,margin=1in]{geometry}
 \usepackage[utf8]{inputenc}
-\usepackage{enumitem}
+\usepackage[english]{babel}
+\usepackage{csquotes}
 \usepackage{setspace}
+
+\usepackage[backend=biber,style=numeric]{biblatex}
+\addbibresource{bibliography.bib}
 
 \title{Progress Report}
 \author{Daniel Cloutier \and Sagar Patel}
@@ -14,32 +18,27 @@
         \maketitle 
     \end{singlespace}
 
-    \section{TODO}
-    Side note: I have text wrapping on in case the lines go super far off screen, that's why.
-
-    References if needed. I assume we'll use APA or something. It's pretty easy to do it in LaTeX. I'll have to look it up though, but I know a few people who've done it before.
-
     \section{Problem Statement}
 
     In this era, there is a massive amount of data collected in a large variety of different topics, of which lots of information can be extracted. The issue here comes with the fact that we cannot simply extract the information by visual inspection. There is currently too much data. 
     
-    One such domain that contains a large amount of data is the game of chess. Many players like to study chess games to try and improve their play, but it's very hard to find games that are relevant or interesting to learn from amidst the plethora of games to choose from. Although there are many famous known games such as the Opera game of Paul Morphy vs Duke Karl or game 6 from the 1972 world championship match between Robert Fischer vs Boris Spassky, these are usually kept as beginner studies. Also, the fact that they are already well known doesn't necessarily help us discover anything new. 
+    One such domain that contains a large amount of data is the game of chess. Many players like to study chess games to try and improve their play, but it's very hard to find games that are relevant or interesting to learn from amidst the plethora of games to choose from. Although there are many famous known games such as the Opera game of Paul Morphy vs Duke Karl or game 6 from the 1972 world championship match between Robert Fischer vs Boris Spassky \cite{chessgames}, these are usually kept as beginner studies. Also, the fact that they are already well known doesn't necessarily help us discover anything new. 
     
-    On top of these numerous known games, surely there are many more games that you could learn from. In fact, the website lichess.org logged 68,027,862 games at all levels of play in September of 2020 alone. Some of these could be interesting to study, irrespective of the players ratings not being at the level of Grandmaster. All of this to say, there must be support from algorithms or machine learning techniques to be able to group similar games of interest together, or show games that lie far outside the norm, which could be interesting studies.
+    On top of these numerous known games, surely there are many more games that you could learn from. In fact, the website lichess.org logged 68,027,862 games at all levels of play in September of 2020 alone \cite{lichessdb}. Some of these could be interesting to study, irrespective of the players ratings not being at the level of Grandmaster. All of this to say, there must be support from algorithms or machine learning techniques to be able to group similar games of interest together, or show games that lie far outside the norm, which could be interesting studies.
 
     \section{Problem Analysis}
 
-    In order to tackle this problem, we must try and quantify what makes a game more or less similar to others and perhaps what other parameters might be used to determine whether a game would be worth studying or not. (Information from the paper inserted here with their distance function, or how they did the supervised version.)
+    In order to tackle this problem, we must try and quantify what makes a game more or less similar to others and perhaps what other parameters might be used to determine whether a game would be worth studying or not. Luckily for us, all moves in a chess game can be represented in a general format called "Portable Game Notation"
+
+    For example, we could define a total "distance" of a game as some sum of the differences between two moves, defining the distance as some function of piece values, distance moved on the board and whether a piece was capture or not.
+
+    We must also take into consideration that the data we will be using will likely be the lichess games database, which contains games at all levels of play. This means some games will be of very poor quality while some will be of extremely high quality. In fact, some Grandmaster level players play chess online, or even stream their own games. This means that our data should be sorted, or at least quantified on more than one axis to more aptly determine whether a game that is an outlier is significantly more interesting than others, or is just a very poor quality game played by beginners.
+
+    Finally, we must also look at the clock times. Oftentimes, chess games are played with different time controls, varying anywhere between 1 minute for all your moves, up to the official International Chess Federation (FIDE - Fédération Internationale des Échecs) time control of "90 minutes for the first 40 moves of the game, followed by 30 minutes for the rest of the game with an additional 30 seconds added per move starting move 1." \cite{fiderules}. This also can affect the quality of games, as a game that lasts a mere 2 minutes will likely be of far lesser quality than a game that lasted multiple hours. 
 
     \section{Literature Review}
 
-    http://pami.uwaterloo.ca/pub/sunym/overview.pdf
-
-    ^^ An overview of associative classifier 
-
-    $https://www.chessprogramming.org/Point_Value_by_Regression_Analysis$
-
-    ^^ Very important for piece value changes.
+    Based on this problem analysis 
 
     Unsupervised:
 
@@ -61,6 +60,8 @@
     \section{Algorithmic Sketch, Illustration of Solution}
 
     Not sure what we would do here, but we can probably draw something pretty quick in paint (or figure out how to do graphs in \LaTeX) as our sketch. It probably isn't that complex\dots Probably a famous last words moment though.
+
+    \printbibliography
     
 
 \end{document}

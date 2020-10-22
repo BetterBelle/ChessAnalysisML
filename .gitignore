@@ -1,5 +1,14 @@
+# ignoring all the junk files created from latex
 *.aux
 *.fdb_latexmk
 *.fls
 *.log
 *.synctex.gz
+*.bcf
+*.blg
+*.bbl
+*.run.xml
+
+# ignoring any database info you might grab from lichess
+# these files are uselessly large
+lichess*
