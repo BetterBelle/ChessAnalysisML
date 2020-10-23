@@ -77,7 +77,13 @@
 
     \section{Subproblems, Statement and Analysis}
 
-    Subproblem: Not all games have position evaluations, so we will possibly have to do our own position evaluations if we want to have that as a parameter for the unsupervised algorithm. That or we can scrap that idea as it isn't really necessary considering player ELO ratings will be already a good indicator of the quality of games. 
+    Right from the beginning of this project, we wanted to extract meaningful information from chess data in addition to implementing the research provided. Luckily we have access to over 1.5 billion records of chess games played by people all around the world. We believe there is valuable information to learn if we can extract it effectively. We decided to look deeper into the point values assigned to each chess piece and the circumstances can affect these values. During a chess match, each player can be assigned scores that are evaluated by various position features - most importantly the number of pieces on each side and further the positions, centralization, and mobility of each piece. By adjusting the individual weight of specific pieces on the board it allows us to emphasizes the difference in the importance of these pieces. The literature we have provided sampled their research using the standard "Reinfeld values" in which pawn=1, bishop=knight=3, rook=5, and queen=9 while the king is given an infinite value. While this is a good guide, chess is rarely that simple. The evaluation of the pieces can be changed due to many parameters such as pawns near the edges are worth less than those near the center, pawns close to promotion are worth far more, pieces controlling the center are worth more than average and trapped pieces are worthless, etc. Selecting effective weights for pieces allows us to estimate the player's positional advantage. For example, suppose we see a randomly chosen position in which White has a pawn advantage of 2 points. With a probability of close to 80\% , we can assert a White win. 
+
+    What is the correct weight for chess pieces? Unfortunately, there is no right answer however, there are various famous algorithms that attempt to cover different strategies and positions. We intend to use these weighted values to find advantages that were not discovered by the researchers using simple Reinfeld values and uncover interesting strategies. 
+    
+
+    Subproblem: Not all games have position evaluations, so we will possibly have to do our own position evaluations if we want to have that as a parameter for the unsupervised algorithm. That or we can scrap that idea as it isn't really necessary considering player ELO ratings will be already a good indicator of the quality of games.    
+
 
     \section{Algorithmic Sketch, Illustration of Solution}
 
