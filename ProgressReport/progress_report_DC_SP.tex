@@ -28,7 +28,7 @@
 
     \section{Problem Analysis}
 
-    In order to tackle this problem, we must try and quantify what makes a game more or less similar to others and perhaps what other parameters might be used to determine whether a game would be worth studying or not. Luckily for us, all moves in a chess game can be represented in a general format called "Portable Game Notation"
+    In order to tackle this problem, we must try and quantify what makes a game more or less similar to others and perhaps what other parameters might be used to determine whether a game would be worth studying or not. Luckily for us, all moves in a chess game can be represented in a general format called \textit{Portable Game Notation} (PGN), which displays moves in a human readable ASCII format using \textit{Standard Algebraic Notation} (SAN). This PGN contains information such as the date, time control, player names, player ratings as well as of course, the moves played during the game in SAN. SAN is used to describe which piece is moved ([Q]ueen, [R]ook, [K]ing, k[N]ight, [B]ishop, [P]awn/nothing) and to which square it is moved, using a system of a-h for horizontal position and 1-8 for vertical position, using the White player as the point of reference. We can also represent games using Forsyth-Edwards Notation (FEN) which describes a specific position in a chess game in one line of ASCII text \cite{pgnrules}.
 
     For example, we could define a total "distance" of a game as some sum of the differences between two moves, defining the distance as some function of piece values, distance moved on the board and whether a piece was capture or not.
 
@@ -38,7 +38,29 @@
 
     \section{Literature Review}
 
-    Based on this problem analysis 
+    Based on this problem analysis we were able to find related literature that addressed some of these problems. Namely, we found a distance function that classifies a move as a 9-dimensional vector \cite{main}. Before we go into this however, they also define weights to each chess piece. Namely: 
+
+    \begin{table}[ht]
+        \begin{tabular}{|l|l|l|l|l|l|l|l|}
+        \hline
+            & K  & Q & R & B & N & P & NULL \\ \hline
+        Weight & 12 & 9 & 5 & 3 & 2 & 1 & 0    \\ \hline
+        \end{tabular}
+    \end{table}
+
+    With the dimensions of the vector being: 
+
+    \begin{enumerate}
+        \item x coordinate of the piece before move using SAN 
+        \item y coordinate of the piece before move using SAN 
+        \item x coordinate of the piece after move using SAN 
+        \item y coordinate of the piece after move using SAN 
+        \item x coordinate of the piece captured using SAN 
+        \item y coordinate of the piece captured using SAN 
+        \item weight of the piece before move 
+        \item weight of the piece after move 
+        \item weight of the piece captured
+    \end{enumerate}
 
     Unsupervised:
 
