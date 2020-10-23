@@ -114,8 +114,11 @@
     \begin{tabular}[c]{@{}l@{}}1. e4 b6 2. Bc4 Bb7 3. f3 e6 4. Nc3 Nf6 5. d4 d5 \\ 6. exd5 exd5 7. Bb5+ c6 8. Bd3 Bd6 9. Bg5 h6 10. Bxf6 Qxf6 \\ 11. Qe2+ Kd8 12. O-O-O Qxd4 13. Ba6 Qf4+ 14. Qd2 Qxd2+ 15. Rxd2 Nxa6 \\ 16. Nh3 Bc8 17. Ne4 Bc7 18. Re1 Bxh3 19. gxh3 Bf4 20. Nc3 Bxd2+ \\ 21. Kxd2 Re8 22. Rg1 g6 23. Ne2 Kd7 24. Nf4 Nc5 25. b4 Ne6 \\ 26. Nd3 Kd6 27. Re1 Re7 28. Ne5 Rae8 29. c4 Nd4 30. c5+ bxc5 \\ 31. bxc5+ Kxc5 32. Nd3+ Kd6 33. Rc1 Nxf3+ 34. Kc3 c5 35. Kb2 Rb8+ \\ 36. Ka3 Re3 37. Ka4 Rxd3 38. Rxc5 0-1\end{tabular} \\ \hline
     \end{tabular}
     \end{table}
+
+    \newpage
     
-    We will be creating a script that will extract the PGN data shown above and store into DB using this structure. 
+    We will be creating a script that will extract the PGN data shown above and store into DB using the following structure. Once the data has been submitted to our database, we can then further process each Chess game using our implementation of the machine learning algorithm as described in the previous sections. 
+
     \begin{table}[ht]
     \centering
     \begin{tabular}{|l|l|l|l|l|l|l|}
@@ -126,8 +129,7 @@
     ...                                                   & ...                                                           & ...                                                          & ...                                                      & ...                                                  & ...                                                & ...                                                   \\ \hline
     \end{tabular}
     \end{table}
-    
-    Once the data has been submitted to our database, we can then further process each Chess game using our implementation of the machine learning algorithm.   
-    \newpage
+
+    \clearpage
     \printbibliography
 \end{document}
