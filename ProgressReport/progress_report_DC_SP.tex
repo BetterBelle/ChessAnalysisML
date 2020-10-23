@@ -91,8 +91,43 @@
 
     \section{Algorithmic Sketch, Illustration of Solution}
 
-    Not sure what we would do here, but we can probably draw something pretty quick in paint (or figure out how to do graphs in \LaTeX) as our sketch. It probably isn't that complex\dots Probably a famous last words moment though.
-
+    PGN Data sample. This data set contains each movement made by two players and its resulting outcome
+    \begin{table}[ht]
+    \centering
+    \begin{tabular}{|l|}
+    \hline
+    {[}Event "Rated Bullet game"{]} \\ \hline
+    {[}Site "https://lichess.org/iyb412a3"{]} \\ \hline
+    {[}White "augustus\_hill"{]} \\ \hline
+    {[}Black "Romoda"{]} \\ \hline
+    {[}Result "0-1"{]} \\ \hline
+    {[}UTCDate "2013.02.28"{]} \\ \hline
+    {[}UTCTime "23:00:01"{]} \\ \hline
+    {[}WhiteElo "1741"{]} \\ \hline
+    {[}BlackElo "2082"{]} \\ \hline
+    {[}WhiteRatingDiff "-3"{]} \\ \hline
+    {[}BlackRatingDiff "+3"{]} \\ \hline
+    {[}ECO "B00"{]} \\ \hline
+    {[}Opening "Owen Defense"{]} \\ \hline
+    {[}TimeControl "120+0"{]} \\ \hline
+    {[}Termination "Normal"{]} \\ \hline
+    \begin{tabular}[c]{@{}l@{}}1. e4 b6 2. Bc4 Bb7 3. f3 e6 4. Nc3 Nf6 5. d4 d5 \\ 6. exd5 exd5 7. Bb5+ c6 8. Bd3 Bd6 9. Bg5 h6 10. Bxf6 Qxf6 \\ 11. Qe2+ Kd8 12. O-O-O Qxd4 13. Ba6 Qf4+ 14. Qd2 Qxd2+ 15. Rxd2 Nxa6 \\ 16. Nh3 Bc8 17. Ne4 Bc7 18. Re1 Bxh3 19. gxh3 Bf4 20. Nc3 Bxd2+ \\ 21. Kxd2 Re8 22. Rg1 g6 23. Ne2 Kd7 24. Nf4 Nc5 25. b4 Ne6 \\ 26. Nd3 Kd6 27. Re1 Re7 28. Ne5 Rae8 29. c4 Nd4 30. c5+ bxc5 \\ 31. bxc5+ Kxc5 32. Nd3+ Kd6 33. Rc1 Nxf3+ 34. Kc3 c5 35. Kb2 Rb8+ \\ 36. Ka3 Re3 37. Ka4 Rxd3 38. Rxc5 0-1\end{tabular} \\ \hline
+    \end{tabular}
+    \end{table}
+    
+    We will be creating a script that will extract the PGN data shown above and store into DB using this structure. 
+    \begin{table}[ht]
+    \centering
+    \begin{tabular}{|l|l|l|l|l|l|l|}
+    \hline
+    \begin{tabular}[c]{@{}l@{}}Move\\ Number\end{tabular} & \begin{tabular}[c]{@{}l@{}}Piece\\ Before\\ Movc\end{tabular} & \begin{tabular}[c]{@{}l@{}}Piece\\ After\\ Movc\end{tabular} & \begin{tabular}[c]{@{}l@{}}Piece\\ Captured\end{tabular} & \begin{tabular}[c]{@{}l@{}}Moved\\ From\end{tabular} & \begin{tabular}[c]{@{}l@{}}Moved\\ To\end{tabular} & \begin{tabular}[c]{@{}l@{}}Captured\\ At\end{tabular} \\ \hline
+    1                                                     & Pawn                                                          & Pawn                                                         & NULL                                                     & e2                                                   & e4                                                 & e4                                                    \\ \hline
+    2                                                     & King                                                          & King                                                         & NULL                                                     & e1                                                   & g1                                                 & g1                                                    \\ \hline
+    ...                                                   & ...                                                           & ...                                                          & ...                                                      & ...                                                  & ...                                                & ...                                                   \\ \hline
+    \end{tabular}
+    \end{table}
+    
+    Once the data has been submitted to our database, we can then further process each Chess game using our implementation of the machine learning algorithm.   
     \newpage
     \printbibliography
 \end{document}
