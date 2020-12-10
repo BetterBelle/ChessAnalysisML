@@ -97,6 +97,7 @@ def generate_dataset():
                         
 
                 writer.writerows(rows)
+                rows = []
 
 
 
