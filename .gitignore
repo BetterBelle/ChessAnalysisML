@@ -8,7 +8,5 @@
 *.blg
 *.bbl
 *.run.xml
-
-# ignoring any database info you might grab from lichess
-# these files are uselessly large
-lichess*
+.vscode
+*test*
