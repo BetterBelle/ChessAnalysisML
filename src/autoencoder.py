@@ -34,4 +34,4 @@ def train_encoder(autoencoder, encoder, training_set, testing_set):
     """
     autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
     autoencoder.fit(training_set, training_set, epochs=50, batch_size=100, shuffle=True, validation_data=(testing_set, testing_set))
-    encoder.save("encoder_model")
+    encoder.save("saved_networks/encoder_model")
