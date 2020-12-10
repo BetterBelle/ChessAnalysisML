@@ -33,14 +33,15 @@ def generate_dataset():
         black_wins = 0
     
         for gamefile in filelist:
-            if white_wins > NUM_WINS and black_wins > NUM_WINS:
+            if white_wins >= NUM_WINS and black_wins >= NUM_WINS:
                 break
-            with bz2.open(urllib.request.urlopen(gamefile), "rt") as reader:
-                if white_wins > NUM_WINS and black_wins > NUM_WINS:
-                    break
 
+            with bz2.open(urllib.request.urlopen(gamefile), "rt") as reader:
                 chessgame = None
                 while True:
+                    if white_wins >= NUM_WINS and black_wins >= NUM_WINS:
+                        break
+
                     try:
                         chessgame = chess.pgn.read_game(reader)
                     except EOFError:
@@ -49,6 +50,10 @@ def generate_dataset():
                         break
 
                     # Filtering data
+                    if chessgame.headers['Result'] == '1-0' and white_wins >= NUM_WINS:
+                        continue
+                    if chessgame.headers['Result'] == '0-1' and black_wins >= NUM_WINS:
+                        continue
                     if chessgame.headers['Result'] == '1/2-1/2':
                         continue
                     if not chessgame.headers['WhiteElo'].isnumeric() or not chessgame.headers['BlackElo'].isnumeric():
@@ -82,16 +87,12 @@ def generate_dataset():
                     # Convert board to our representation
                     castling_rights = board.fen().split(' ')[2]
                     board_position = fen_to_inputarray(board.board_fen(), castling_rights, int(board.turn))
-                    result = chessgame.headers['Result']
-                    if result == '1-0':
-                        result = [1, 0]
-                    else:
-                        result = [0, 1]
+                    result = [int(res) for res in chessgame.headers['Result'].split('-')]
 
-                    if result[0] == 1 and white_wins <= NUM_WINS:
+                    if result[0] == 1 and white_wins < NUM_WINS:
                         rows.append([result, chessgame.headers['WhiteElo'], chessgame.headers['BlackElo'], board_position])
                         white_wins += 1
-                    elif result[0] == 0 and black_wins <= NUM_WINS:
+                    elif result[0] == 0 and black_wins < NUM_WINS:
                         rows.append([result, chessgame.headers['WhiteElo'], chessgame.headers['BlackElo'], board_position])
                         black_wins += 1
                         
