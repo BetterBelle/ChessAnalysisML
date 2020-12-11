@@ -33,7 +33,7 @@ def train_encoder(autoencoder, training_set, testing_set):
     Finally, saves the autoencoder.
     """
     autoencoder.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-    autoencoder.fit(x=training_set, y=training_set, epochs=100, shuffle=True, validation_data=(testing_set, testing_set))
+    autoencoder.fit(x=training_set, y=training_set, epochs=50, shuffle=True, validation_data=(testing_set, testing_set))
     autoencoder.save("saved_networks/autoencoder_model")
 
 
