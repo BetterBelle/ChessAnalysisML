@@ -53,3 +53,7 @@ def setup_autoencoder():
     training_data = all_data[:len(all_data) // 2]
     testing_data = all_data[len(all_data) //2 + 1:]
     train_encoder(autoencoder, training_data, testing_data)
+
+
+if __name__ == "__main__":
+    setup_autoencoder()
