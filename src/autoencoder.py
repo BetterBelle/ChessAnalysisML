@@ -16,23 +16,21 @@ def create_autoencoder():
     decoded = tf.keras.layers.Dense(69, activation='relu')(decoder_layer_2)
 
     autoencoder = tf.keras.Model(input_board, decoded)
-    encoder = tf.keras.Model(input_board, encoded)
 
-    return autoencoder, encoder
-
+    return autoencoder
 
 
-def train_encoder(autoencoder, encoder, training_set, testing_set):
+
+def train_encoder(autoencoder, training_set, testing_set):
     """
-    Takes an autoencoder, the encoding part of the autoencoder, a training data set of chess boards and a testing set.
+    Takes an autoencoder, a training data set of chess boards and a testing set.
     
     Fits the chess board autoencoder based on the training set and tests with the separate testing set.
 
-    Runs 50 epochs of batch sizes of 100 with shuffling on. 
+    Runs 100 epochs with shuffling on. 
 
-    Finally, saves the encoder only.
+    Finally, saves the autoencoder.
     """
-    autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
-    # encoder.compile(optimizer='adam', loss='binary_crossentropy')
-    autoencoder.fit(training_set, training_set, epochs=50, batch_size=100, shuffle=True, validation_data=(testing_set, testing_set))
-    autoencoder.save("saved_networks/encoder_model")
+    autoencoder.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+    autoencoder.fit(x=training_set, y=training_set, epochs=100, shuffle=True, validation_data=(testing_set, testing_set))
+    autoencoder.save("saved_networks/autoencoder_model")

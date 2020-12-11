@@ -17,10 +17,35 @@ def main():
 
     training_data = all_data[:len(all_data) // 2]
     testing_data = all_data[len(all_data) //2 + 1:]
-    auto_encoder, encoder = ac.create_autoencoder()
 
-    ac.train_encoder(auto_encoder, encoder, training_data, testing_data)
-    auto_encoder.evaluate(testing_data, testing_data)
+    autoencoder = tf.keras.models.load_model("saved_networks/autoencoder_model")
+
+    right_encoder = tf.keras.Model(inputs=autoencoder.input, outputs=autoencoder.layers[-4].output)
+    left_encoder= tf.keras.models.clone_model(right_encoder)
+    left_encoder.set_weights(right_encoder.get_weights())
+
+    right_encoder.compile(optimizer='adam', loss='binary_crossentropy')
+    left_encoder.compile(optimizer='adam', loss='binary_crossentropy')
+
+    for i, layer in enumerate(right_encoder.layers):
+        layer._name = 'right_encoder_layer' + str(i)
+    for i, layer in enumerate(left_encoder.layers):
+        layer._name = 'left_encoder_layer_' + str(i)
+
+    right_encoder.summary()
+    left_encoder.summary()
+
+    combined = tf.keras.layers.concatenate([right_encoder.output, left_encoder.output])
+
+    chess_network = tf.keras.layers.Dense(40, activation='relu')(combined)
+    chess_network = tf.keras.layers.Dense(20, activation='relu')(chess_network)
+    chess_network = tf.keras.layers.Dense(10, activation='relu')(chess_network)
+    chess_network = tf.keras.layers.Dense(2, activation='relu')(chess_network)
+
+    chess_model = tf.keras.Model(inputs=[left_encoder.input, right_encoder.input], outputs=chess_network)
+    chess_model.compile(optimizer='adam', loss='binary_crossentropy')
+    chess_model.summary()
+
 
     
 if __name__ == "__main__":
