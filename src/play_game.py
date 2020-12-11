@@ -5,122 +5,77 @@ import numpy as np
 
 deepchess = tf.keras.models.load_model('saved_networks/deepchess_model')
 
-def alphabeta(board, depth, alpha_pos, beta_pos, max_player):
-    # if it's the end node, return the board
-    if depth == 0 or board.legal_moves.count() == 0:
-        return board
+def computermove(board, depth):
+    alpha = -1
+    beta = 1
+    v = -1
+    for move in board.legal_moves:
+        cur = board.copy()
+        cur.push(move)
+        if v == -1:
+            v = alphabeta(board, depth - 1, alpha, beta, False)
+            best_move = move
+            if alpha == -1:
+                alpha = v
+        else:
+            new_v = net_predict(alphabeta(cur, depth - 1, alpha, beta, False), v)[0]
+            if new_v != v:
+                best_move = move
+                v = new_v 
+            alpha = net_predict(alpha, v)[0]
 
-    # if alpha and beta aren't set, set them each to an arbitrary position
-    if alpha_pos == None and max_player:
-        alpha_pos = board.copy()
-        for move in board.legal_moves:
-            alpha_pos.push(move)
-            break
-    elif beta_pos == None and not max_player:
-        beta_pos = board.copy()
-        for move in board.legal_moves:
-            beta_pos.push(move)
-            break
+    print (best_move)
+    board.push(best_move)
+    return board
 
-    if max_player:
-        # value = -inf
-        best_board = None
-        for move in board.legal_moves:
-            # set value to arbitrary move
-            if best_board == None:
-                best_board = board.copy()
-                best_board.push(move)
-                continue
 
-            board.push(move)
-            board_after_move = board.copy()
-            board.pop()
+def alphabeta(board, depth, alpha, beta, max_player):
+	if depth == 0 or board.legal_moves.count() == 0:
+		return board
 
-            # value = max(value, alphabeta(child))
-            prediction = deepchess.predict(
-                {
-                    'left_encoder_layer_0': np.array([cd.fen_to_inputarray(best_board.fen())]), 
-                    'right_encoder_layer_0': np.array(
-                        [cd.fen_to_inputarray(alphabeta(board_after_move.copy(), depth-1, alpha_pos, beta_pos, False).fen())]
-                    )
-                }
-            )
-            if prediction[0][0] < prediction[0][1]:
-                best_board = board_after_move.copy()
+	if max_player:
+		v = -1
+		for move in board.legal_moves:
+			cur = board.copy()
+			cur.push(move)
+			if v == -1:
+				v = alphabeta(cur, depth-1, alpha, beta, False) 
+			if alpha == -1:
+				alpha = v
+		
+			v = net_predict(v, alphabeta(cur, depth-1, alpha, beta, False))[0]
+			alpha = net_predict(alpha, v)[0]
+			if beta != 1:
+				if net_predict(alpha, beta)[0] == alpha:
+					break
+		return v 
+	else:
+		v = 1
+		for move in board.legal_moves:
+			cur = board.copy()
+			cur.push(move)
+			if v == 1:
+				v = alphabeta(cur, depth-1, alpha, beta, True) 
+			if beta == 1:
+				beta = v
+			
+			v = net_predict(v, alphabeta(cur, depth-1, alpha, beta, True))[1]
+			beta = net_predict(beta, v)[1] 
+			if alpha != -1:
+				if net_predict(alpha, beta)[0] == alpha:
+					break
+		return v 
 
-            # alpha = max(alpha, value)
-            prediction = deepchess.predict(
-                {
-                    'left_encoder_layer_0': np.array([cd.fen_to_inputarray(alpha_pos.fen())]), 
-                    'right_encoder_layer_0': np.array([cd.fen_to_inputarray(best_board.fen())])
-                }
-            )
-            if prediction[0][0] < prediction[0][1]:
-                alpha_pos = best_board.copy()
+def net_predict(first, second):
 
-            # pretend beta = +inf, so it's impossible for alpha to be larger
-            if beta_pos == None:
-                continue
+    result = deepchess.predict(
+        {
+            'left_encoder_layer_0': np.array([cd.fen_to_inputarray(first.fen())]), 
+            'right_encoder_layer_0': np.array([cd.fen_to_inputarray(second.fen())])
+        }
+    )[0]
 
-            # if alpha >= beta break
-            prediction = deepchess.predict(
-                {
-                    'left_encoder_layer_0': np.array([cd.fen_to_inputarray(alpha_pos.fen())]), 
-                    'right_encoder_layer_0': np.array([cd.fen_to_inputarray(beta_pos.fen())])
-                }
-            )
-            if prediction[0][0] >= prediction[0][1]:
-                break
-
-        return best_board
+    if result[0] > result[1]:
+        return (first, second)
     else:
-        # value = +inf
-        best_board = None
-        for move in board.legal_moves:
-            # set value to arbitrary move
-            if best_board == None:
-                best_board = board.copy()
-                best_board.push(move)
-                continue
-
-            board.push(move)
-            board_after_move = board.copy()
-            board.pop()
-
-            # value = min(value, alphabeta(child))
-            prediction = deepchess.predict(
-                {
-                    'left_encoder_layer_0': np.array([cd.fen_to_inputarray(best_board.fen())]), 
-                    'right_encoder_layer_0': np.array(
-                        [cd.fen_to_inputarray(alphabeta(board_after_move.copy(), depth-1, alpha_pos, beta_pos, True).fen())]
-                    )
-                }
-            )
-            if prediction[0][0] > prediction[0][1]:
-                best_board = board_after_move.copy()
-
-            # alpha = min(beta, value)
-            prediction = deepchess.predict(
-                {
-                    'left_encoder_layer_0': np.array([cd.fen_to_inputarray(beta_pos.fen())]), 
-                    'right_encoder_layer_0': np.array([cd.fen_to_inputarray(best_board.fen())])
-                }
-            )
-            if prediction[0][0] > prediction[0][1]:
-                beta_pos = best_board.copy()
-
-            # pretend alpha = -inf, so it's impossible for beta to be smaller
-            if alpha_pos == None:
-                continue
-
-            # if beta <= alpha break
-            prediction = deepchess.predict(
-                {
-                    'left_encoder_layer_0': np.array([cd.fen_to_inputarray(alpha_pos.fen())]), 
-                    'right_encoder_layer_0': np.array([cd.fen_to_inputarray(beta_pos.fen())])
-                }
-            )
-            if prediction[0][0] >= prediction[0][1]:
-                break
-
-        return best_board
+        return (second, first)
