@@ -4,14 +4,25 @@ import autoencoder as ac
 import deepchess as dc
 import random
 import numpy as np
+import chess
+import play_game as pg
+import create_dataset as cd
 
 def main():
-    training_data = create_trainingset()
-    deepchess = tf.keras.models.load_model('saved_networks/deepchess_model')
-    dc.train_deepchess(deepchess, training_data)
+    # training_data = create_trainingset()
+    # testing_data = create_trainingset()
+    # deepchess = tf.keras.models.load_model('saved_networks/deepchess_model')
+    # dc.train_deepchess(deepchess, training_data)
+    board = chess.Board()
+    
+    while not board.is_game_over():
+        board = pg.computermove(board, 3)
+
+        uci_move = input("Enter move: ")
+        board.push(chess.Move.from_uci(uci_move))
 
 
-def get_piecegames(): 
+def get_piecegames():
     white = []
     black = []
 
@@ -40,7 +51,7 @@ def create_trainingset():
     white = all_pieces[0]
     black = all_pieces[1]
 
-    trainingLen = 10000
+    trainingLen = 1000000
     for n in range(trainingLen):
         loc = random.randint(0, 1)     
         if loc == 0:
@@ -58,8 +69,6 @@ def create_trainingset():
 def rand_game(game):
     loc = random.randint(0, len(game) - 1)
     return game[loc]
-
-
 
 
 if __name__ == "__main__":
