@@ -85,8 +85,7 @@ def generate_dataset():
                         i += 1
                     
                     # Convert board to our representation
-                    castling_rights = board.fen().split(' ')[2]
-                    board_position = fen_to_inputarray(board.board_fen(), castling_rights, int(board.turn))
+                    board_position = fen_to_inputarray(board.fen())
                     result = [int(res) for res in chessgame.headers['Result'].split('-')]
 
                     if result[0] == 1 and white_wins < NUM_WINS:
@@ -103,9 +102,9 @@ def generate_dataset():
 
 
 
-def fen_to_inputarray(board_fen, castling_rights, turn):
+def fen_to_inputarray(board_fen):
     """
-    Takes a board FEN respresentation, castling rights (a string containing K or Q or k or q) and the turn to move (0 for black, 1 for white)
+    Takes a board FEN respresentation
 
     Converts it all to an array of length 64 + 5 for the board + turn and castling rights (in that order)
     """
@@ -132,12 +131,17 @@ def fen_to_inputarray(board_fen, castling_rights, turn):
         '8': [0 for _ in range(8)],
     }
 
-    board_fen = board_fen.replace('/', '')
+    board, castling_rights, turn = board_fen.split(' ')[0], board_fen.split(' ')[2], board_fen.split(' ')[1]
     board_repr = []
-    for char in board_fen:
+    board = board.replace('/','')
+    for char in board:
         board_repr.extend(board_map[char])
 
-    board_repr.append(turn)
+    if turn == 'w':
+        board_repr.append(1)
+    else:
+        board_repr.append(0)
+
     board_repr.extend([0,0,0,0])
     if 'K' in castling_rights:
         board_repr[-4] = 1
@@ -155,5 +159,6 @@ def fen_to_inputarray(board_fen, castling_rights, turn):
 
 if __name__ == "__main__":
     start_time = time.time() 
-    generate_dataset()
+    # generate_dataset()
+    fen_to_inputarray("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     print ("Done --- %s seconds ---" % (time.time() - start_time))
