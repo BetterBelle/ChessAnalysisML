@@ -24,13 +24,15 @@ def main():
     left_encoder= tf.keras.models.clone_model(right_encoder)
     left_encoder.set_weights(right_encoder.get_weights())
 
-    right_encoder.compile(optimizer='adam', loss='binary_crossentropy')
-    left_encoder.compile(optimizer='adam', loss='binary_crossentropy')
-
     for i, layer in enumerate(right_encoder.layers):
         layer._name = 'right_encoder_layer' + str(i)
+        layer.trainable = False
     for i, layer in enumerate(left_encoder.layers):
         layer._name = 'left_encoder_layer_' + str(i)
+        layer.trainable = False
+
+    right_encoder.compile(optimizer='adam', loss='binary_crossentropy')
+    left_encoder.compile(optimizer='adam', loss='binary_crossentropy')
 
     right_encoder.summary()
     left_encoder.summary()
