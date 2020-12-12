@@ -1,6 +1,58 @@
 import tensorflow as tf
 import csv
 
+import os
+import time
+import numpy as np
+from keras.models import Model, Sequential, clone_model
+from keras.layers import Input, Dense, Activation, Concatenate
+from keras.utils import Sequence
+from keras import backend as K
+
+
+
+autoencoderLayers = [773, 600, 400, 200, 100]
+
+dbnLayers = len(autoencoderLayers) - 1
+
+def test_autoencoder():
+    for i in range(dbnLayers):
+
+        dbn_model = Sequential()
+        dbn_model.add(Dense(autoencoderLayers[i+1], activation='relu',
+                            input_dim=autoencoderLayers[i]))
+        dbn_model.add(Dense(autoencoderLayers[i], activation='relu'))
+        dbn_model.compile(optimizer='adam',
+                        loss='mse',
+                        metrics=['accuracy'])
+
+        dbn_model.summary()
+
+        # """ TRAIN MODEL """
+        # dbn_model.fit(mat, mat, batch_size=batch_size, epochs=dnb_epochs)
+        # # score = dbn_model.evaluate(mat, mat, batch_size=batch_size)
+        # # print(score)
+
+        # # GET THE WEIGHT MATRIX
+        # weightMatrix.append(dbn_model.layers[0].get_weights())
+        # # Get the outputs of the hidden layer
+        # getHiddenOuptut = K.function(
+        #     [dbn_model.input], [dbn_model.layers[0].output])
+        # mat = getHiddenOuptut([mat])[0]
+        # # print("HIDDEN SHAPE: ", getHiddenOuptut)
+        # # print(weightMatrix)
+        # # shape_vec.append(mat.shape)
+
+
+        # # print("WEIGHT MATRIX SHAPE:", len(
+        # #     weightMatrix[0][0]), len(weightMatrix[0][0][0]))
+        # # print("WEIGHT MATRIX SHAPE:", len(
+        # #     weightMatrix[1][0]), len(weightMatrix[1][0][0]))
+        # # print("WEIGHT MATRIX SHAPE:", len(
+        # #     weightMatrix[2][0]), len(weightMatrix[2][0][0]))
+        # # print("WEIGHT MATRIX SHAPE:", len(
+        # #     weightMatrix[3][0]), len(weightMatrix[3][0][0]))
+
 
 def create_autoencoder():
     """
@@ -56,4 +108,5 @@ def setup_autoencoder():
 
 
 if __name__ == "__main__":
-    setup_autoencoder()
+    #setup_autoencoder()
+    test_autoencoder()
