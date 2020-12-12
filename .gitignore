@@ -8,6 +8,7 @@
 *.blg
 *.bbl
 *.run.xml
+*.out
 .vscode
 *test*
 saved_networks
