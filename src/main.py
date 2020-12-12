@@ -10,6 +10,7 @@ import create_dataset as cd
 
 def main():
     # Comment this out when the network is created and trained
+    cd.generate_dataset()
     ac.setup_autoencoder()
     dc.create_deepchess()
     training_data = create_trainingset()
