@@ -6,7 +6,7 @@ import chess
 import chess.pgn
 import random
 
-NUM_WINS = 10000
+NUM_WINS = 50000
 
 def generate_dataset():
     """
@@ -58,7 +58,7 @@ def generate_dataset():
                         continue
                     if not chessgame.headers['WhiteElo'].isnumeric() or not chessgame.headers['BlackElo'].isnumeric():
                         continue
-                    if int(chessgame.headers['WhiteElo']) < 1200 or int(chessgame.headers['BlackElo']) < 1200:
+                    if int(chessgame.headers['WhiteElo']) < 2000 or int(chessgame.headers['BlackElo']) < 2000:
                         continue
                     if '+' not in chessgame.headers['TimeControl']:
                         continue
@@ -115,12 +115,12 @@ def fen_to_inputarray(board_fen):
         'R': [4],
         'Q': [5],
         'K': [6],
-        'p': [-1],
-        'n': [-2],
-        'b': [-3],
-        'r': [-4],
-        'q': [-5],
-        'k': [-6],
+        'p': [7],
+        'n': [8],
+        'b': [9],
+        'r': [10],
+        'q': [11],
+        'k': [12],
         '1': [0 for _ in range(1)],
         '2': [0 for _ in range(2)],
         '3': [0 for _ in range(3)],

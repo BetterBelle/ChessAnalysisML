@@ -51,7 +51,7 @@ def setup_autoencoder():
             all_data.append([int(tile) for tile in row[-1][1:-1].split(', ')])
     
     training_data = all_data[:len(all_data) // 2]
-    testing_data = all_data[len(all_data) //2 + 1:]
+    testing_data = all_data[len(all_data) // 2 + 1:]
     train_encoder(autoencoder, training_data, testing_data)
 
 

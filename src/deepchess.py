@@ -27,7 +27,7 @@ def create_deepchess():
     chess_network = tf.keras.layers.Dense(40, activation='relu')(combined)
     chess_network = tf.keras.layers.Dense(20, activation='relu')(chess_network)
     chess_network = tf.keras.layers.Dense(10, activation='relu')(chess_network)
-    chess_network = tf.keras.layers.Dense(2, activation='sigmoid', name='dense_3')(chess_network)
+    chess_network = tf.keras.layers.Dense(2, activation='relu', name='dense_3')(chess_network)
 
     chess_model = tf.keras.Model(inputs=[left_encoder.input, right_encoder.input], outputs=chess_network)
     chess_model.compile(optimizer='adam', loss='binary_crossentropy')
@@ -43,5 +43,15 @@ def train_deepchess(deepchess_model, training_set):
         layer.trainable = False
     deepchess_model.summary()
     deepchess_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-    deepchess_model.fit({'left_encoder_layer_0': np.array(training_set[0]), 'right_encoder_layer_0': np.array(training_set[1])},{'dense_3': np.array(training_set[2])}, epochs=50, shuffle=True)
+    deepchess_model.fit(
+        {
+            'left_encoder_layer_0': np.array(training_set[0]), 
+            'right_encoder_layer_0': np.array(training_set[1])
+        },
+        {
+            'dense_3': np.array(training_set[2])
+        }, 
+        epochs=50, 
+        shuffle=True
+    )
     deepchess_model.save("saved_networks/autoencoder_model")

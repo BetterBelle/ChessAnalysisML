@@ -9,17 +9,21 @@ import play_game as pg
 import create_dataset as cd
 
 def main():
-    # training_data = create_trainingset()
-    # testing_data = create_trainingset()
-    # deepchess = tf.keras.models.load_model('saved_networks/deepchess_model')
-    # dc.train_deepchess(deepchess, training_data)
-    board = chess.Board()
-    
-    while not board.is_game_over():
-        board = pg.computermove(board, 3)
+    # Comment this out when the network is created and trained
+    ac.setup_autoencoder()
+    dc.create_deepchess()
+    training_data = create_trainingset()
+    deepchess = tf.keras.models.load_model('saved_networks/deepchess_model')
+    dc.train_deepchess(deepchess, training_data)
 
-        uci_move = input("Enter move: ")
-        board.push(chess.Move.from_uci(uci_move))
+    # This part is just for manually playing against the game
+    # board = chess.Board()
+    
+    # while not board.is_game_over():
+    #     board = pg.computermove(board, 3)
+
+    #     uci_move = input("Enter move: ")
+    #     board.push(chess.Move.from_uci(uci_move))
 
 
 def get_piecegames():
@@ -73,4 +77,3 @@ def rand_game(game):
 
 if __name__ == "__main__":
     main()
-    #create_trainingset()
