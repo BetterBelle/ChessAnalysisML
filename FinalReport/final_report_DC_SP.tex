@@ -20,17 +20,26 @@
     \end{singlespace}
 
     \begin{abstract}
-        In the current era, high volumes of data are being collected at an incredible velocity. Much of this data is embedded with valuable knowledge. \cite{main} One example of the types of data that is collected is chess data. In fact, \href{https://lichess.org/}{lichess.org}, one of many websites where chess can be played online against opponents from around the world contains a data dump of over one and a half billion games, seventy eight million of them being played in the month of November 2020 alone \cite{lichessdb}. We intend to present an automatic learning method for chess, utilizing deep neural networks. We created our deep neural network using a combination of both unsupervised and supervised training. Employing unsupervised training, our engine pre-trains to identify and extract high-level features that exist in a dataset of chess matches. The supervised training compares two chess positions and evaluates the board which is more favourable, from the white player's perspective. Therefore, we create a deep neural network that can understand chess without incorporating the rules of the game and using no prior manually extracted features. Instead, the system is trained from end to end on a large dataset of chess positions. The resulting deep neural network should allow for simulations that extend the possibilities of chess strategies, highly valuable to chess players at all levels.
+        In the current era, high volumes of data are being collected at an incredible velocity. Much of this data is embedded with valuable knowledge. \cite{main} One example of the types of data that is collected is chess data. In fact, \href{https://lichess.org/}{lichess.org}, one of many websites where chess can be played online against opponents from around the world, contains a data dump of over one and a half billion games, seventy eight million of them being played in the month of November 2020 alone \cite{lichessdb}. We intend to present an automatic learning method for chess, utilizing deep neural networks. We created our deep neural network using a combination of both unsupervised and supervised training. Employing unsupervised training, our engine pre-trains to identify and extract high-level features that exist in a dataset of chess board positions. The supervised training compares two chess positions and evaluates the board which is more favourable, from the white player's perspective. Therefore, we create a deep neural network that can understand chess without incorporating the rules of the game and using no prior manually extracted features. Instead, the system is trained from end to end on a large dataset of chess positions. The resulting deep neural network should allow for simulations that extend the possibilities of chess strategies, highly valuable to chess players at all levels.
     \end{abstract}
         
     \section{Introduction}
-    The game of chess is a very popular board game and has become a well liked study for computer enthusiasts, from the creation of Deep Blue in 1996 which defeated the world chess champion at the time, Garry Kasparov, up to modern data analysis techniques being tested on chess games as a show for it is possible uses. Chess has become a good starting point for both more advanced software developers attempting to test something innovative or for newcomers trying to increase their knowledge.
+    The game of chess is a very popular board game and has become a well liked study for computer enthusiasts, especially in the domain of Artificial Intelligence, from the creation of Deep Blue in 1996 which defeated the world chess champion at the time, Garry Kasparov, up to modern data analysis techniques being tested on chess games as a show for it is possible uses. Chess has become a good starting point for both more advanced software developers attempting to test something innovative or for newcomers trying to increase their knowledge. 
 
-    One of the many domains of study that has been recently using chess as a means of improving itself is that of Machine Learning.
+    One of the many reasons for the game's popularity is that chess data is collected at an incredibly high volume and velocity. Not only this, but the data collected is often readily available to the public. Databases such as \href{https://database.chessbase.com/}{chessbase} and \href{https://database.lichess.org/}{lichess} contain thousands, if not millions of games in a standardized notation format for chess called Portable Game Notation. This makes the game of chess a perfect starting point for new tools in Data Science to be tested.
 
-    It should have motivation, brief review of others ideas, what is your approach and how this differs from others.
+    Another of the many domains of study that has been recently using chess as a means of improving itself is that of Machine Learning. Namely, with the advent of algorithms such as AlphaZero \cite{alphazero}, some new ideas have risen in an attempt to create algorithms that not only play chess better than humans, but even some that try and mimic human play \cite{maiachess}.
+
+    Keeping all of this in mind, we wanted to take advantage of the very large amount of data stored by \href{https://lichess.org/}{lichess} in order to implement and perhaps try and reinvent some already existing ideas using this data that, as far as we could tell, has not been used much in recently published material.
     
-    \section{Extensive review of other ideas}
+    \section{Review of Research and Ideas}
+
+    \subsection{Chess Game Categorization}
+
+    \subsection{Predicting Game Results}
+
+    \subsection{Creating a Chess Engine}
+
 
     \section{Problem Statement}
 
@@ -50,4 +59,5 @@
     
     \clearpage
     \printbibliography
+
 \end{document}
