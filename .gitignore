@@ -9,6 +9,9 @@
 *.bbl
 *.run.xml
 *.out
+*.toc
+
+# Other ignores
 .vscode
 *test*
 saved_networks
