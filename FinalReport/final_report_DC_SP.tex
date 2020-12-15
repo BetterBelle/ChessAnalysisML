@@ -94,7 +94,7 @@
 
     Now that we know what we want to do, how exactly do we approach this problem. Surely we are not the only ones that have thought of creating a chess engine that learns on its own. This of course is indeed the case. There have been some attempts at making a self-learning chess engine, however these attempts mainly focus on learning from self-play; the computer knows the rules of chess exclusively and by playing against itself millions of times can learn on its own what wins and what does not \cite{leelachess}\cite{alphazero}. This is not necessarily what we want. We already have the data we need, it is now just a matter of getting the computer to learn from it.
 
-    From this we can form a formal problem definition: How do we use modern Data Science techniques in order to get a computer to learn how to play chess at a human or superhuman level?
+    From this we can form a formal problem definition: How do we use modern Data Science techniques in order to get a computer to learn how to play chess at a human or superhuman level? We will be looking primarily at creating a computer that can play chess in a more humanlike way. 
     
     \section{Defining Tools for our Approach}
 
@@ -165,25 +165,40 @@
     Now that we know we can model every possible move, we can move forward with modeling a board state using FEN. What FEN does is it encodes a board state using a single line of characters in the format: (board) (turn) (castling) (en-passant square) (halfmove clock) (fullmove number) \cite{pgnrules}. One example would be something like this: rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1 which is the board after the single move 1. e4 is played. Using this, we can model every possible board state including whether a pawn can be taken by en-passant or not, whether players have castling rights as well as half-move clocks for determining whether the game is a draw. This format can easily be converted into a vector of integers that can be passed into a neural network for training, especially if paired with an output vector of whether that board resulted in a win or loss for the white player. 
 
     \subsection{Search Trees}
+
+    Seeing as we would like the create a chess engine, simply getting our neural network to predict whether a move is winning or not is not enough. Therefore, we must find some way for our approach to also generate possible move candidates and determine which is the most viable option for a win, using it's predictions. This means we will have to implement some sort of search tree algorithm. We can do it in the following way: modeling every possible move we can play, checking what the computer thinks is the best possible move and playing that one. 
+
+    What we will be doing is implementing a version of alpha-beta search. What this does is it generates every possible move from a given position and gives each node a value, often based on some function determining a value for the resulting position \cite{alphabeta_montecarlo}. In our case, this will be the value our neural network generates when we pass positions into it. In our case, the white player will want to maximize the value and the black player will want to minimize it, in essence assuming best play from either player. 
+
+    From here, in order to speed up our search, we can make an attempt at pruning branches. This is done by always keeping the current maximal value (called alpha) and the current minimal value (called beta). When you reach a node where the white player is making a move, whose value is less than the current alpha, there is no point in searching further down this branch, as it is already worse than what we currently consider to be the best move. The reverse is done for the black player with the beta value \cite{deepchess}\cite{alphabeta_montecarlo}. Using this will cut off some branches of the tree, effectively reducing the number of branches we need to check. We can set this up for a certain depth of search as well.
+
+    What we will be doing is slightly different, but follows the same concept. We will be keeping alpha and beta as an entire board position, rather than a single value. Then when comparing, instead of using the neural network to grant a value to a position, we will instead pass into it two positions, from which it will decide the board state it considers to be better, from the white player's perspective \cite{deepchess}.
     
     \section{Our Model}
 
     \subsection{Inspiration}
 
-    \begin{enumerate}
-        \item Talk about deepchess
-        \item Talk about MaiaChess (optional)
-        \item Talk about LeelaChess (optional)
-        \item Talk about AlphaZero (optional)
-    \end{enumerate}
+    The primary inspiration for this work is that of the \href{http://dx.doi.org/10.1007/978-3-319-44781-0_11}{Deep Chess} paper. Essentially, we will be creating a Neural Network whose structure is heavily inspired by the one described in this paper. We also take some inspiration from \href{https://doi.org/10.1145/3394486.3403219}{Maia Chess} in terms of the goal of our project, as well as some from \href{https://github.com/LeelaChessZero/lc0}{Leela Chess Zero} and \href{https://arxiv.org/abs/1712.01815}{AlphaZero} in the fact that they are also Neural Networks designed to play chess, though their goals are slightly different. 
+
+    What we will be doing is parsing the chess data from the lichess database, which contains many millions of games, filtering games and positions we do not want, converting positions into input vectors as well as an expected output for which board is considered better, from the white players perspective. When the network is trained, we can then create an alpha-beta search that will use our network to determine which branches of the tree to keep looking at and which ones to discard when considering different possible moves.
 
     \subsection{Parsing Chess Data}
+    
+    First thing we will have to do is parse the data from the lichess database in order to extract what we want from it. Seeing as our dataset is incredibly expansive and ranges from beginner players, to Grandmaster level players from time controls as fast as one minute all the way up to slow games lasting over an hour, this means we're going to want to reduce the amount of variability in the data, especially since our network will only be taking in positions as inputs. Players playing at different time controls and different skill levels will heavily increase the variety of the data, which may make it hard for the algorithm to predict whether a position is favourable or not, especially as the other data will not be given to it. As such, we will be only considering specific board states, similarly to Deep Chess, along with some other data filtering which we have chosen to try and shrink our dataset, considering our lack of computational resources.
 
+    Because of this, we have made some limits. We will be limiting our data to:
     \begin{enumerate}
-        \item Talk about reading PGN 
-        \item Talk about converting PGN into FEN
-        \item Talk about converting FEN into proper input (numbers)
+        \item Only games which ended decisively, as in no drawn games will be taken into our dataset. 
+        \item Only games where both players are rated at least 1200 points in the lichess ranking system.
+        \item Only games where each player has a minimum of twenty minutes to make all of their moves, excluding time increment.
+        \item Only games which lasted at least ten moves.
     \end{enumerate}
+
+    We will also be picking our games at random from the lichess database. As it is partitioned by month, our program will select a random order for the months and start from the top, considering all of our conditions for what will be a valid game or not. When it finds a game that is valid, it will select a random move between move ten and the end of the game, play the game up to that point and store the resulting position as well as the result of the game and the player ratings. We do this until we reach ten thousand positions in which white won the game and ten thousand positions in which black won the game, for a total of twenty thousand games. This means that when we go to train our network, which will compare two different boards, one where white wins and one where black wins, we will have a total of $10^{4} * 10^{4} = 10^{8}$ or one hundred million different possibilities. This should be more than enough data to adequately train our network. 
+
+    The above means our program will have to be able to parse through the PGN in the lichess database and convert it into an input vector. This input vector, we will define as sixty-nine different values, sixty four for the different tiles of the board, four of them bits for castling rights and the last a bit for determining who's move it is. Each value for the board will contain a value between negative six and positive six, negative values for black pieces, positives values for white pieces and a zero for an empty tile. Although our autoencoder may suffer from the lack of total positions, we also lack the resources to recompute the PGN -> Input Vector computation every time we want to train, as well as the resources to merely store many hundreds of thousands, or even millions of board positions that we could generate from this database.
+    
+    We will be parsing the PGN and converting each move into a new board position, beginning with the starting position for chess, all the way up to the final move that we have randomly selected from the selected game. The resulting position will then be parsed and converted into the input vector as described above. Note that this is different than the input vector described in Deep Chess. They used a bit string 773 characters long as their input vector. This is called a bit-board representation \cite{deepchess}. We do not use this representation due to a lack of computational resources. A network that large would take a significantly larger amount of resources to train than we currently have access to.
 
     \subsection{Autoencoder}
 
@@ -217,6 +232,7 @@
     \begin{enumerate}
         \item Talk about the basics of the library
         \item Talk about why we used it (it's use)
+        \item Parsing the lichess data
         \item Code snippets?
     \end{enumerate}
 
@@ -251,7 +267,7 @@
     \subsection{Possible Problems}
 
     \begin{enumerate}
-        \item Talk about ReLU for autoencoder 
+        \item Talk about ReLU for autoencoder (negative value issue)
         \item Talk about how we may have taken the wrong approach to training the autoencoder
         \item Talk about how maybe our network is a little small 
     \end{enumerate}
@@ -260,7 +276,8 @@
 
     \begin{enumerate}
         \item Better quality data (higher rated players)
-        \item More input nodes 
+        \item Better filtering (excluding moves that were captures?)
+        \item More input nodes (including en passant, player ratings etc)
         \item Different search method (monte-carlo)
         \item Whatever else we can think of
     \end{enumerate}
