@@ -21,6 +21,8 @@
 
     \tableofcontents
 
+    \clearpage
+
     \begin{abstract}
         In the current era, high volumes of data are being collected at an incredible velocity. Much of this data is embedded with valuable knowledge. \cite{main} One example of the types of data that is collected is chess data. In fact, \href{https://lichess.org/}{lichess.org}, one of many websites where chess can be played online against opponents from around the world, contains a data dump of over one and a half billion games, seventy eight million of them being played in the month of November 2020 alone \cite{lichessdb}. We intend to present an automatic learning method for chess, utilizing deep neural networks. We created our deep neural network using a combination of both unsupervised and supervised training. Employing unsupervised training, our engine pre-trains to identify and extract high-level features that exist in a dataset of chess board positions. The supervised training compares two chess positions and evaluates the board which is more favourable, from the white player's perspective. Therefore, we create a deep neural network that can understand chess without incorporating the rules of the game and using no prior manually extracted features. Instead, the system is trained from end to end on a large dataset of chess positions. The resulting deep neural network should allow for simulations that extend the possibilities of chess strategies, highly valuable to chess players at all levels.
     \end{abstract}
@@ -38,7 +40,21 @@
 
     \subsection{Chess Game Categorization}
 
+    A possibility for using this data is to attempt to categorize chess data into different groups based on some sort of requirements that we could find. For example, perhaps we could group games based on similar openings, similar player ratings or perhaps try to find some different parameters to use to categorize them. One example comes by defining a distance between two games.
+
+    One such way is defined as follows. Defining a nine dimensional space, consisting of the x-y location of a piece before it has been moved as well as after, a weight for the piece before it was moved as well as after (because of piece promotion) as well as the piece that was captured, as well as x-y locations for the piece that was captured. From here you can compare moves between games and calculate the distance between them to figure out what games are similar and what games are outliers \cite{main}. 
+
+    This kind of categorization could be very useful for new and old players alike. To be able to choose a game and immediately be given results for similar games is a very powerful learning tool. There are often \href{https://www.chessstrategyonline.com/content/tutorials/basic-checkmates-smothered-mate}{patterns} that can emerge from chess positions which can likely be spotted by thorough study of similar positions or games. Also, for an advanced player, studying games that lie outside of the norm can be a good way to surprise unexpecting opponents with new ideas.
+
+    The above is in fact a type of unsupervised artificial intelligence. But what we can also do by using data mining techniques is create a supervised pattern matching algorithm to classify similar positions \cite{main}. Once again, this idea can help categorize games into buckets which can then be looked at if there are certain themes that you know of that appear in a certain group. Seeing other similar games could grant some insight into those types of positions, whether you want to learn the basics of them or want some fresh ideas to improve your play.
+
     \subsection{Predicting Game Results}
+
+    Following from the previous idea, we could try to use the data in an attempt to predict the result of a game. The lichess database contains a lot of information which others might not. Based on our research, most uses of chess data was limited almost exclusively to Grandmaster games, in a specific time control. Lichess contains players of all levels, games are played in all sorts of time controls including fast one minute "bullet" games, all the way up to thirty minute slow games \cite{lichessdb}. Using all of this information, along with what was defined previously and the fact that we know the result of every game in the database, we could try and define some way to predict whether a current game of chess, given the player ratings, other similar games, time control and so on, is going to be a win for white, black or a draw.
+
+    For example, say we could plot all games according to their similarity distance as defined above \cite{main}. However, if we were to include things like player rating, opening used, time control and so on, we could plot games on multiple dimensions. From here, by looking at games similar to an input game and looking at their results, we could make an attempt at predicting what the result of that game will be in its current state.
+
+    There's even more than we can do still. The lichess database starting April 2017 also includes the exact clock times on every single move played. Keeping this in mind means we can improve the above idea further. Some ideas are including the current amount of time each player has, trying to improve the way we define how similar two games are or even by defining a function for determining whether a board position is winning or losing from the white player's perspective assuming best play, not unlike what modern chess computers do \cite{stockfish}. 
 
     \subsection{Creating a Chess Engine}
 
