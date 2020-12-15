@@ -42,20 +42,22 @@
 
     \subsection{Chess Game Categorization}
 
-    A possibility for using this data is to attempt to categorize chess data into different groups based on some sort of requirements that we could find. For example, perhaps we could group games based on similar openings, similar player ratings or perhaps try to find some different parameters to use to categorize them. One example comes by defining a distance between two games.
+    A possibility for using this data is to attempt to categorize chess data into different groups based on some sort of requirements that we could find. For example, perhaps we could group games based on similar openings \cite{eco}, similar player ratings or perhaps try to find some different parameters to use to categorize them. One example comes by defining a distance between two games.
 
-    One such way is defined as follows. Defining a nine dimensional space, consisting of the x-y location of a piece before it has been moved as well as after, a weight for the piece before it was moved as well as after (because of piece promotion) as well as the piece that was captured, as well as x-y locations for the piece that was captured. From here you can compare moves between games and calculate the distance between them to figure out what games are similar and what games are outliers \cite{main}. This information could be easily stored although incredibly voluminous. Every move of the game would be stored as nine seperate values. Figures 1 and 2 show how storing this information could look.
+    One such way is defined as follows. Defining a nine dimensional space, consisting of the x-y location of a piece before it has been moved as well as after, a weight for the piece before it was moved as well as after (because of piece promotion) as well as the piece that was captured, as well as x-y locations for the piece that was captured. From here you can compare moves between games and calculate the distance between them to figure out what games are similar and what games are outliers \cite{main}. This information could be easily stored although incredibly voluminous. Every move of the game would be stored as nine seperate values. Figures \ref{fig:storing9d} and \ref{fig:piece_weights} show how storing this information could look.
 
     
         \begin{figure}[ht]
             \centering
-            \includegraphics[width=0.9\textwidth]{9dboard.jpg}
             \caption{How storing the above information would look like}
+            \label{fig:storing9d}
+            \includegraphics[width=0.9\textwidth]{9dboard.jpg}
         \end{figure}
         \begin{figure}[ht]
             \centering
-            \includegraphics[width=0.7\textwidth]{sampleweights.jpg}
             \caption{Sample weight values for pieces}
+            \label{fig:piece_weights}
+            \includegraphics[width=0.7\textwidth]{sampleweights.jpg}
         \end{figure}
 
     From here on we can define the distance between two moves as a euclidean distance between two moves defined by this nine dimensional space. To extend this further, we can define the distance between two whole games as a sum of the distance between corresponding moves. This would be defined as 
@@ -68,11 +70,11 @@
 
     This kind of categorization could be very useful for new and old players alike. To be able to choose a game and immediately be given results for similar games is a very powerful learning tool. There are often \href{https://www.chessstrategyonline.com/content/tutorials/basic-checkmates-smothered-mate}{patterns} that can emerge from chess positions which can likely be spotted by thorough study of similar positions or games. Also, for an advanced player, studying games that lie outside of the norm can be a good way to surprise unexpecting opponents with new ideas.
 
-    The above is in fact a type of unsupervised artificial intelligence. But what we can also do by using data mining techniques is create a supervised pattern matching algorithm to classify similar positions \cite{main}. Once again, this idea can help categorize games into buckets which can then be looked at if there are certain themes that you know of which appear in a certain group. Seeing other similar games could grant some insight into those types of positions, whether you want to learn the basics of them or want some fresh ideas to improve your play.
+    The above is in fact a type of unsupervised machine learning. But what we can also do by using data mining techniques is create a supervised pattern matching algorithm to classify similar positions \cite{main}\cite{association}. Once again, this idea can help categorize games into buckets which can then be looked at if there are certain themes that you know of which appear in a certain group. Seeing other similar games could grant some insight into those types of positions, whether you want to learn the basics of them or want some fresh ideas to improve your play.
 
     \subsection{Predicting Game Results}
 
-    Following from the previous idea, we could try to use the data in an attempt to predict the result of a game. The lichess database contains a lot of information which others might not. Based on our research, most uses of chess data was limited almost exclusively to Grandmaster games, in a specific time control. Lichess contains players of all levels, games are played in all sorts of time controls including fast one minute "bullet" games, all the way up to thirty minute slow games \cite{lichessdb}. Using all of this information, along with what was defined previously and the fact that we know the result of every game in the database, we could try and define some way to predict whether a current game of chess, given the player ratings, other similar games, time control and so on, is going to be a win for white, black or a draw.
+    Following from the previous idea, we could try to use the data in an attempt to predict the result of a game. The lichess database contains a lot of information which others might not. Based on our research, most uses of chess data was limited almost exclusively to Grandmaster games, in a specific time control, all as defined in the FIDE rulebook \cite{fiderules}. Lichess contains players of all levels, games are played in all sorts of time controls including fast one minute "bullet" games, all the way up to thirty minute slow games \cite{lichessdb}. Using all of this information, along with what was defined previously and the fact that we know the result of every game in the database, we could try and define some way to predict whether a current game of chess, given the player ratings, other similar games, time control and so on, is going to be a win for white, black or a draw.
 
     For example, say we could plot all games according to their similarity distance as defined above \cite{main}. However, if we were to include things like player rating, opening used, time control and so on, we could plot games on multiple dimensions. From here, by looking at games similar to an input game and looking at their results, we could make an attempt at predicting what the result of that game will be in its current state.
 
@@ -90,51 +92,185 @@
 
     \section{Problem Statement}
 
-    Now that we know what we want to do, how exactly do we approach this problem. Surely we are not the only ones that have thought of creating a chess engine that learns on its own. This of course is indeed the case. There have been some attempts at making a self-learning chess engine, however these attempts mainly focus on learning from self-play; the computer knows the rules of chess exclusively and by playing against itself millions of times can learn on its own what wins and what does not \cite{leelachess}\cite{alphazero}. This is not necessarily what we want. We already have the data we need, it's now just a matter of getting the computer to learn from it.
+    Now that we know what we want to do, how exactly do we approach this problem. Surely we are not the only ones that have thought of creating a chess engine that learns on its own. This of course is indeed the case. There have been some attempts at making a self-learning chess engine, however these attempts mainly focus on learning from self-play; the computer knows the rules of chess exclusively and by playing against itself millions of times can learn on its own what wins and what does not \cite{leelachess}\cite{alphazero}. This is not necessarily what we want. We already have the data we need, it is now just a matter of getting the computer to learn from it.
 
     From this we can form a formal problem definition: How do we use modern Data Science techniques in order to get a computer to learn how to play chess at a human or superhuman level?
     
-    \section{Defining Our Approach}
+    \section{Defining Tools for our Approach}
 
-    \subsection{Artificial Intelligence}
+    \subsection{Artificial Intelligence and Machine Learning}
+
+    Using this problem definition we can start talking about what exactly it means for a computer to learn chess. Occording to the Oxford Dictionary, this falls into the definition of Artificial Intelligence. Essentially, our approach will be taking an attempt at making a computer think for itself. Although it still is not in a very humanlike way; indeed, the computer is not really thinking by our definition, it is merely doing math in the background and determining an answer based on that \cite{mltypes_book}. 
+
+    But of course, Artifical Intelligence covers many types of problems. This one in particular that we are trying to tackle falls very well into the more narrow scope of Machine Learning, which is more about writing code in order to make a computer learn \cite{mlprojects_netdevs}. This is precisely what we want. But this means we need to learn more about Machine Learning. 
+
+    There are various types of Machine Learning \cite{mltypes_book}. However what we want to do lends itself better to two specific ones, namely supervised and unsupervised machine learning. In fact, when talking about chess game categorization we already mentioned these terms with respect to how the computer categorized the items. Our approach is not as different as it may seem.
 
     \subsection{Supervised Learning}
 
+    Now what exactly do we mean by supervised machine learning. Fortunately, this term is quite literal. Supervised machine learning is a term used when we are talking about an computer algorithm which maps inputs to already known outputs \cite{mltypes_book}. Essentially, we define a set of inputs with mapped outputs that we know already. From here, we can define some algorithm by which the computer can learn on its own how to properly map each input to each corresponding output. Every time it gets an answer wrong, you warn it and it attempts to change the way it maps the inputs and if it gets an answer correctly it merely stays the way it is. In a sense you are supervising the computer as it learns, seeing as you already know the answer. What you aren not doing however, is defining \textit{how} the computer reaches its answer. It does that on its own.
+    
+    To give an example, this is not too dissimilar to how a child learns how to identify different everday objects. The parent already knows the words (outputs) to all objects (inputs). What the parent does is supervise their child as they explore and try to label different objects with words. If the child correctly identifies an item in the house, they are rewarded and if they get it incorrectly, they are told what the object is actually called and hopefully they get it correctly next time. If you repeat this many times over, eventually the child learns how to identify every single object in the house. 
+
+    In our case, we already know the result of every single game in the database we are using. This means that by giving each game a label for which side wins, we can make an attempt at getting the computer to look at a specific position in the game and trying to tell whether it's winning for someone or a draw. Show the computer enough positions and it should be able to look at any game and do the same.
+
     \subsection{Unsupervised Learning}
+
+    Now we move on to a different kind of Machine Learning, namely the unsupervised kind. Thankfully after defining supervised learning, this one becomes a bit easier as it is quite literally a sort of opposite. Where in supervised learning, you ensure that the computer correctly maps the inputs to the corresponding outputs, in an unsupervised Machine Learning approach, you do not know what the output is. Instead, the computer models the inputs on its own \cite{mltypes_book}.
+
+    This is something we want to consider when looking at our data. Seeing as we want to use our approach at an attempt to discover something new, it would be helpful to take an unsupervised approach at some point during our implementation. Essentially, taking our data and getting the computer to model them as an output on its own could help us discover something new.
 
     \subsection{Neural Networks}
 
+    Neural Networks are a very solid approach for us to accomplish everything we want. In fact, a Neural Network is fairly straightforward, you give it some content and you get an identification back. More specifically, you have some input nodes, which are just number values, which connect into more layers of nodes and so on, until you reach an output layer of nodes which correspond to different labels \cite{nn_models_theory_projects}. This is essentially perfect for us, especially in the context of supervised Machine Learning. We can model a network which, when trained, will learn how to identify whether a certain position is winning or losing from a certain perspective. This can be either using all of the parameters we have discussed, or using only the information about a specific position, excluding factors like time control or player strength. This would likely be closer to an attempt at making the computer play strictly better, rather than more human.
+
+    Using Neural Networks, we can do quite a lot in fact. On top of the above, we can also train it to try and extract only important information about a certain board state \cite{deepchess}, or other parameters we give it. This would be done by using what is called an autoencoder.
+
+    In essence, an autoencoder is actually a type of unsupervised learning. Instead of the Neural Network trying to identify which label a certain input belongs to, we instead get the neural network to try and recreate the input as its output \cite{nn_autoencoders}. But how is that related to extracting important information?
+
+    Well, when you structure an autoencoder, you can create the network in such a way that you have less and less nodes as you go through, before finally re-expanding back up to the original size of the input. What this means is that all of the information from the input can still be extracted from less input nodes \cite{deepchess}. In essence, what you've done is compressed the original input down to a smaller size while still keeping enough important information to be able to extract the original input from it. So what you would do is train the network to encode, then decode the input, but only use the part the encodes.
+
+    If we wanted to reduce the size of our input layer, this is a great way of doing it. If we had as an example, two hundred inputs, we could train an autoencoder to reduce it to say, one hundred inputs, in order to then feed that into something that could try and label what we want. 
+
     \subsection{Chess Data Structure}
+
+    All of the above is fine, but now we need to actually determine what exactly our inputs will look like. We already know the objective; getting the computer to play moves by looking at a board state and determining whether it is a winning position or not, but how will we accomplish this. In order to accomplish this, we'll need to take a look at chess notation, namely Standard Algebraic Notation (SAN) Portable Game Notation (PGN) and Forsyth-Edwards Notation (FEN) \cite{pgnrules}.
+
+    First off, let's explain SAN. What SAN allows a player to do is easily model any move that is played in a very simple format. If you name each column (also called "file") from left-right from the white players perspective with the letters a-h and all rows (also called "rank") from forward to back from the white players perspective with the numbers 1-8, you can mark each square with a letter-number pair (i.e. a4, for the leftmost square, 4 tiles away from the white players perspective). Each move is formatted as a series of characters, all in ASCII, as follows:
+
+    \begin{enumerate}
+        \item Piece moved, denoted as [K]ing, [Q]ueen, k[N]ight, [R]ook, [B]ishop or nothing if a pawn
+        \item Letter or number of original piece location if the same type of piece can make it to the same square
+        \item x if the move captures another piece 
+        \item Location of the square the piece arrives at 
+        \item =(piece) if the move is a pawn promotion, where (piece) is the piece it was promoted to
+        \item + if the move is check, \# if the move is checkmate 
+    \end{enumerate}
+
+    This all seems complicated, but allows you to accurately describe every possible move a player can make using a maximum of 7 characters. Let's look at the position in figure \ref{fig:chess_position} as an example. 
+
+    \begin{singlespace}
+        \begin{figure}[ht]
+            \centering
+            \caption{Random Chess Position}
+            \label{fig:chess_position}
+            \includegraphics[width=0.5\textwidth]{random_position.jpg}
+        \end{figure}
+    \end{singlespace}
+
+    Some possible moves for the white player would be: Nfe7+, Nce7+, Rb8\#, c8=Q\#, c8=B, Nxg7 or Kf3. Notice that to move a knight to e7, you must specify which knight moves there, as it is ambiguous. Using this knowledge we can move on to describing Portable Game Notation (PGN).
+
+    Chess games nowadays are written down using PGN. The way PGN is formatted is by listing all of the moves played during a game using SAN, numbered by which turn it is, along with some added metadata like player names, dates, player ratings (ELO) and others. It is also all in ASCII, so it can be easily read by both humans and computer alike \cite{pgnrules}. Having this is a powerful tool as we can now simulate every single game in our dataset, as well as capturing metadata like player ratings, opening used, the date the game was played, the time control used and so on. From here, we can determine some way to convert this information into something more easily parsed by a neural network, as in changing everything into a numeric vector that can be passed into the network, as well as formatting what our output vector will have to look like.
+
+    Now that we know we can model every possible move, we can move forward with modeling a board state using FEN. What FEN does is it encodes a board state using a single line of characters in the format: (board) (turn) (castling) (en-passant square) (halfmove clock) (fullmove number) \cite{pgnrules}. One example would be something like this: rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1 which is the board after the single move 1. e4 is played. Using this, we can model every possible board state including whether a pawn can be taken by en-passant or not, whether players have castling rights as well as half-move clocks for determining whether the game is a draw. This format can easily be converted into a vector of integers that can be passed into a neural network for training, especially if paired with an output vector of whether that board resulted in a win or loss for the white player. 
 
     \subsection{Search Trees}
     
     \section{Our Model}
 
+    \subsection{Inspiration}
+
+    \begin{enumerate}
+        \item Talk about deepchess
+        \item Talk about MaiaChess (optional)
+        \item Talk about LeelaChess (optional)
+        \item Talk about AlphaZero (optional)
+    \end{enumerate}
+
     \subsection{Parsing Chess Data}
+
+    \begin{enumerate}
+        \item Talk about reading PGN 
+        \item Talk about converting PGN into FEN
+        \item Talk about converting FEN into proper input (numbers)
+    \end{enumerate}
 
     \subsection{Autoencoder}
 
+    \begin{enumerate}
+        \item Talk about what deepchess autoencoder looks like
+        \item Talk about how we changed ours 
+        \item Show how ours is structured, how we trained it and so on
+    \end{enumerate}
+
     \subsection{Chess Network}
 
+    \begin{enumerate}
+        \item Talk about what deepchess looks like 
+        \item Talk about how we changed ours 
+        \item Talk about how ours is structured, how we trained it and so on
+    \end{enumerate}
+
     \subsection{Playing Moves}
+
+    \begin{enumerate}
+        \item Talk about move tree 
+        \item Talk about alphabeta
+        \item Talk about deep chess' alpha beta 
+        \item Talk about how we needed to use this as well 
+    \end{enumerate}
     
     \section{Implementation}
 
     \subsection{Python-Chess}
 
+    \begin{enumerate}
+        \item Talk about the basics of the library
+        \item Talk about why we used it (it's use)
+        \item Code snippets?
+    \end{enumerate}
+
     \subsection{Tensorflow 2.0 and Keras}
 
+    \begin{enumerate}
+        \item Talk about the basics of tensorflow
+        \item Talk about what keras is (high-level tensorflow)
+        \item Talk about why we used keras (ease of use)
+        \item Code snippets?
+    \end{enumerate}
+
     \subsection{Different Alpha-Beta Search}
+
+    \begin{enumerate}
+        \item Talk about why we chose alpha-beta over monte carlo (we can choose depth of search easier)
+        \item Talk about what we had to change about alphabeta
+        \item Code snippets?
+    \end{enumerate}
     
     \section{Conclusions}
 
     \subsection{Training Results}
 
+    \begin{enumerate}
+        \item Talk about autoencoder accuracy 
+        \item Talk about deepchess accuracy 
+        \item Talk about how awful the engine is 
+        \item Code snippets?
+    \end{enumerate}
+
     \subsection{Possible Problems}
+
+    \begin{enumerate}
+        \item Talk about ReLU for autoencoder 
+        \item Talk about how we may have taken the wrong approach to training the autoencoder
+        \item Talk about how maybe our network is a little small 
+    \end{enumerate}
 
     \subsection{Possible Improvements}
 
+    \begin{enumerate}
+        \item Better quality data (higher rated players)
+        \item More input nodes 
+        \item Different search method (monte-carlo)
+        \item Whatever else we can think of
+    \end{enumerate}
+
     \subsection{Future Possibilities}
+
+    \begin{enumerate}
+        \item With the improvements we can possibly create something that can play at different skill levels 
+        \item Whatever else we can think of
+    \end{enumerate}
     
     \clearpage
     \printbibliography
