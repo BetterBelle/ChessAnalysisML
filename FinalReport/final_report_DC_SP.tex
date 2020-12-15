@@ -2,11 +2,13 @@
 \usepackage[a4paper,margin=1in]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
+\usepackage{graphicx}
 \usepackage{csquotes}
 \usepackage{setspace}
 \usepackage{biblatex}
 \usepackage{hyperref}
 
+\graphicspath{{./}}
 \addbibresource{bibliography.bib}
 
 \title{A Machine Learning Approach to Building a Chess Engine}
@@ -42,11 +44,31 @@
 
     A possibility for using this data is to attempt to categorize chess data into different groups based on some sort of requirements that we could find. For example, perhaps we could group games based on similar openings, similar player ratings or perhaps try to find some different parameters to use to categorize them. One example comes by defining a distance between two games.
 
-    One such way is defined as follows. Defining a nine dimensional space, consisting of the x-y location of a piece before it has been moved as well as after, a weight for the piece before it was moved as well as after (because of piece promotion) as well as the piece that was captured, as well as x-y locations for the piece that was captured. From here you can compare moves between games and calculate the distance between them to figure out what games are similar and what games are outliers \cite{main}. 
+    One such way is defined as follows. Defining a nine dimensional space, consisting of the x-y location of a piece before it has been moved as well as after, a weight for the piece before it was moved as well as after (because of piece promotion) as well as the piece that was captured, as well as x-y locations for the piece that was captured. From here you can compare moves between games and calculate the distance between them to figure out what games are similar and what games are outliers \cite{main}. This information could be easily stored although incredibly voluminous. Every move of the game would be stored as nine seperate values. Figures 1 and 2 show how storing this information could look.
+
+    
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.9\textwidth]{9dboard.jpg}
+            \caption{How storing the above information would look like}
+        \end{figure}
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.7\textwidth]{sampleweights.jpg}
+            \caption{Sample weight values for pieces}
+        \end{figure}
+
+    From here on we can define the distance between two moves as a euclidean distance between two moves defined by this nine dimensional space. To extend this further, we can define the distance between two whole games as a sum of the distance between corresponding moves. This would be defined as 
+
+    \begin{equation}
+        dist(F, G) = \sum^{M}_{i=1} dist(F[i], G[i])
+    \end{equation}
+
+    where F[i] is the $i$-th move of game F, G[i] being the $i$-th move of game G and M is the greater of the maximum number of moves from either game \cite{main}. Appending a NULL move as necessary.
 
     This kind of categorization could be very useful for new and old players alike. To be able to choose a game and immediately be given results for similar games is a very powerful learning tool. There are often \href{https://www.chessstrategyonline.com/content/tutorials/basic-checkmates-smothered-mate}{patterns} that can emerge from chess positions which can likely be spotted by thorough study of similar positions or games. Also, for an advanced player, studying games that lie outside of the norm can be a good way to surprise unexpecting opponents with new ideas.
 
-    The above is in fact a type of unsupervised artificial intelligence. But what we can also do by using data mining techniques is create a supervised pattern matching algorithm to classify similar positions \cite{main}. Once again, this idea can help categorize games into buckets which can then be looked at if there are certain themes that you know of that appear in a certain group. Seeing other similar games could grant some insight into those types of positions, whether you want to learn the basics of them or want some fresh ideas to improve your play.
+    The above is in fact a type of unsupervised artificial intelligence. But what we can also do by using data mining techniques is create a supervised pattern matching algorithm to classify similar positions \cite{main}. Once again, this idea can help categorize games into buckets which can then be looked at if there are certain themes that you know of which appear in a certain group. Seeing other similar games could grant some insight into those types of positions, whether you want to learn the basics of them or want some fresh ideas to improve your play.
 
     \subsection{Predicting Game Results}
 
@@ -54,23 +76,23 @@
 
     For example, say we could plot all games according to their similarity distance as defined above \cite{main}. However, if we were to include things like player rating, opening used, time control and so on, we could plot games on multiple dimensions. From here, by looking at games similar to an input game and looking at their results, we could make an attempt at predicting what the result of that game will be in its current state.
 
-    There's even more than we can do still. The lichess database starting April 2017 also includes the exact clock times on every single move played. Keeping this in mind means we can improve the above idea further. Some ideas are including the current amount of time each player has, trying to improve the way we define how similar two games are or even by defining a function for determining whether a board position is winning or losing from the white player's perspective assuming best play, not unlike what modern chess computers do \cite{stockfish}. 
+    There's even more than we can do still. The lichess database starting April 2017 also includes the exact clock times on every single move played. Keeping this in mind means we can improve the above idea further. Some of these could be including the current amount of time each player has, trying to improve the way we define how similar two games are or even by defining a function for determining whether a board position is winning or losing from the white player's perspective assuming best play, not unlike what modern chess computers do \cite{stockfish}. 
+
+    Using the above information we could try and create an algorithm that would predict whether a game is winning or losing by looking at not only perfect play, but also factoring in things like time trouble and player strength. For a spectator or someone doing analysis, this could be much more insightful as to the dynamics of a position when looking at a game between two specific players instead of looking at a number which assumes best play from both sides.
 
     \subsection{Creating a Chess Engine}
 
-    Moving on with this idea raises the main point for this project. Could we use all of the previous information to create an algorithm that could actually play the game of chess at a human or superhuman level. This is a common theme in the field of Data Science; how to use data to improve the way we look at a certain field. We could attempt to create our own heuristics for what is important and what is not for trying to consider a certain move, however we decided on a different idea. 
+    Moving on with this idea raises the main point for this project. Could we use all of the previous information to create an algorithm that could actually play the game of chess at a human or superhuman level. This appears to be a common theme in the field of Data Science; how to use data to improve the way we look at a certain field. We could attempt to create our own heuristics for what is important and what is not for trying to consider a certain move, however we decided on a different idea. 
 
-    With a lot of superhuman chess engines like Komodo, Houdini and Stockfish, they have evaluation functions are based on hard coded values for things like pieces and piece placement, as well as the stage of the game. With this in mind we considered using something similar along with the rest of the data that we had, but try and make the piece values more accurate via some other resources like regression analysis \cite{piece_values}. This paired with the rest of our data would hopefully allow us to more easily change the difficulty of our chess engine. 
+    With a lot of superhuman chess engines like Komodo, Houdini and Stockfish, they have evaluation functions that are based on hard coded values for things like pieces and piece placement, as well as the stage of the game. With this in mind, we considered using something similar along with the rest of the data that we had, but try and make the piece values more accurate via some other resources like regression analysis \cite{piece_values}. This paired with the rest of our data would hopefully allow us to more easily change the difficulty of our chess engine. 
 
-    Keeping this in mind with the rest of our information, we considered some sort of artificial intelligence that could learn on its own instead of us giving the parameters. We are not chess professionals, but there are indeed ways of getting a computer to learn, especially with large volumes of data like we have at hand \cite{mltypes_book}\cite{mlbook}. Based on our research, this theme comes up often in Data Science, especially when it comes to knowledge discovery. If we give it the parameters that determines whether a position is winning or not, for the computer to make its move, it will only confirm what we know ourselves. If we want to learn something new by creating this chess engine, we believed the best approach would be to let the computer go on its own.
+    Keeping this in mind with the rest of our information, we considered some sort of artificial intelligence that could learn on its own instead of us giving the parameters. We are not chess professionals, but there are indeed ways of getting a computer to learn, especially with large volumes of data like we have at hand \cite{mltypes_book}\cite{mlbook}. This would mean we could generate something useful despite lack of knowledge in the field. Based on our research, this theme comes up often in Data Science, especially when it comes to knowledge discovery. If we give it the parameters that determines whether a position is winning or not, for the computer to make its move, it will only reflect our own knowledge of the game. Of course, seeing as we are not expert chess players, this is not what we want. If we want to learn something new by creating this chess engine, we believed the best approach would be to let the computer use this data to learn on its own.
 
     \section{Problem Statement}
 
-    In this era, there is a massive amount of data collected in a large variety of different topics, of which lots of information can be extracted. The issue here comes with the fact that we cannot simply extract the information by visual inspection. There is currently too much data.
-    
-    One such domain that contains a large amount of data is the game of chess. Many players like to study chess games to try and improve their play, but it's very hard to find games that are relevant or interesting to learn from amidst the plethora of games to choose from. Although there are many famous known games such as the Opera game of Paul Morphy vs Duke Karl or game 6 from the 1972 world championship match between Robert Fischer vs Boris Spassky \cite{chessgames}, these are usually kept as beginner studies. Also, the fact that they are already well known doesn't necessarily help us discover anything new. 
-    
-    On top of these numerous known games, surely there are many more games that you could learn from. In fact, the website lichess.org logged 68,027,862 games at all levels of play in September of 2020 alone \cite{lichessdb}. Some of these could be interesting to study, irrespective of the players ratings not being at the level of Grandmaster. All of this to say, there must be support from algorithms or machine learning techniques to be able to group similar games of interest together, or show games that lie far outside the norm, which could be interesting studies.
+    Now that we know what we want to do, how exactly do we approach this problem. Surely we are not the only ones that have thought of creating a chess engine that learns on its own. This of course is indeed the case. There have been some attempts at making a self-learning chess engine, however these attempts mainly focus on learning from self-play; the computer knows the rules of chess exclusively and by playing against itself millions of times can learn on its own what wins and what does not \cite{leelachess}\cite{alphazero}. This is not necessarily what we want. We already have the data we need, it's now just a matter of getting the computer to learn from it.
+
+    From this we can form a formal problem definition: How do we use modern Data Science techniques in order to get a computer to learn how to play chess at a human or superhuman level?
     
     \section{Our Approach/Model}
     
