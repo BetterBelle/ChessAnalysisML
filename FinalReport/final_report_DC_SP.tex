@@ -226,7 +226,7 @@
 
     In order to accomplish this, we will have to find a way to generate all possible moves from a certain position, generate the resulting board state from each of those moves and compare them to each other. However, keeping alpha-beta pruning in mind, the way we will actually do this is more as described in the Deep Chess paper. Usually, an evaluation function gives a value for the board state, which is then compared to an alpha value, initialized to negative infinity. Alpha takes the maximum value between itself and the new board evaluation. We do the same thing with a beta value, which is initialized to positive infinity, and takes the minimum when comparing from black's perspective \cite{deepchess}. This approach allows us to ignore moves that are worse than the already known best position and not look further down certain branches more than we need to, optimizing our search to only branches that are promising. 
 
-    We will be using a slightly different version however, which is described in the Deep Chess paper. Instead of saving the alpha and beta as values, we will instead store the board position instead. This way, we can compare the alpha board state directly to the current move we're looking at and then choose whichever board state is better for white to replace alpha. In beta's case, we do the same thing but look at which board state is worse for white. 
+    We will be using a slightly different version, however, which is described in the Deep Chess paper. Instead of saving the alpha and beta as values, we will instead store the board position instead. This way, we can compare the alpha board state directly to the current move we're looking at and then choose whichever board state is better for white to replace alpha. In beta's case, we do the same thing but look at which board state is worse for white. 
     
     \section{Implementation}
 
@@ -234,7 +234,7 @@
 
     While working on trying to parse PGNs we managed to find a very convenient library called \href{https://python-chess.readthedocs.io/en/latest/}{python-chess}. Essentially, this library very conveniently manages almost every single thing that you would need for chess. It contains boards, pieces, functions for generating moves, functions for generating FENs from PGNs, inputting moves into a board, move stacks and so on.
 
-    In order to save us some time, we decided to use this library. Seeing as we needed to generate moves, parse PGNs into FENs and so on, this library was a perfect fit. In fact, when it comes to PGNs, this library when parsing through files with multiple PGNs, can perfect distinguish between different games and even stores the metadata in its own dictionary object that can be indexed. This made generating our dataset, as seen in figure ref{fig:python-chess}, a much simpler task than it would have been otherwise.
+    In order to save us some time, we decided to use this library. Seeing as we needed to generate moves, parse PGNs into FENs and so on, this library was a perfect fit. In fact, when it comes to PGNs, this library when parsing through files with multiple PGNs, can perfectly distinguish between different games and even stores the metadata in its own dictionary object that can be indexed. This made generating our dataset, as seen in figure ref{fig:python-chess}, a much simpler task than it would have been otherwise.
 
     \begin{singlespace}
         \begin{figure}[ht]
@@ -245,7 +245,7 @@
         \end{figure}
     \end{singlespace}
 
-    On top of this, we had to learn which way we wanted to get our data from the lichess database. Seeing as the lichess database had a list of all their download links, we were able to use this to our advantage so that we didn't have to fully download onto our machines all of the data for an entire month that we wanted to use. In fact, because of this convenience, we were able to randomize what data from what months was accessed when creating our dataset, to try and create a more varied dataset. A look at the code is seen in figure \ref{fig:lichess-data-grab}
+    On top of this, we had to learn which way we wanted to get our data from the lichess database. Seeing as the lichess database had a list of all their download links, we were able to use this to our advantage so that we didn't have to fully download onto our machines all of the data for an entire month that we wanted to use. In fact, because of this convenience, we were able to randomize what data from what months were accessed when creating our dataset, to try and create a more varied dataset. A look at the code is seen in figure \ref{fig:lichess-data-grab}
 
     \begin{singlespace}
         \begin{figure}[ht]
@@ -349,10 +349,7 @@
 
     \subsection{Future Possibilities}
 
-    \begin{enumerate}
-        \item With the improvements we can create something that can play at different skill levels 
-        \item Whatever else we can think of
-    \end{enumerate}
+    Even though we may have created a neural network that successfully did understand and learnt to play chess, our engine does not have to stop here. Making the changes we stated above will improve the quality and performance of our engine and simply giving more data to the engine will allow the engine to learn from a greater amount of data. However, we believe we can add features to the engine that can set our engine apart from other preexisting models that exist. For instance, we can create an engine that can understand its opponent's skill level and play accordingly to challenge the player however will not completely beat them by using top-level moves. This engine can offer players the opportunity to learn and improve their skill level while the engine can provide them with consistent challenges. This can be achieved by incorporating rating levels into our training dataset. This would allow the engine to categorize and understand the differences between higher skill level and lower skill level chess movements.
     
     \clearpage
     \printbibliography
