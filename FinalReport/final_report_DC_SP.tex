@@ -206,9 +206,11 @@
 
     Our network will consist of input and output layers of 69 nodes, with hidden layers 40 nodes $\rightarrow$ 20 nodes $\rightarrow$ 10 nodes $\rightarrow$ 20 nodes $\rightarrow$ 40 nodes. We will be training this over our data set of twenty thousand board positions and using only the section ending with ten nodes as the encoding part of our deep neural network that will compare two board states. 
 
+    This network will then be trained from this state with random samples of our training data to hopefully be able to regather the original input as its output. From then on, we will set up just the encoding layers and create two copies for the chess evaluator network which we discuss in the next section.
+
     \subsection{Chess Network}
 
-    Using our implementation of earlier discussed Autocoders, we can convert given chess positions into a vector of values that represent the high-level features of that given position. In the Deep Chess paper, the researchers break up their neural network into two major components, the Deep Belief Network and Deep Chess. The Deep Belief Network is based on stacked autoencoders that are trained using layer-wise unsupervised training. The autoencoders discussed above are used to create 5 layers of nodes that begin with an input of 773 nodes and are encoded to 100 nodes. Our structure is inspired by this network however, our input data consist of 69 nodes and is encoded down to 10 nodes. A major difference between both of our Deep Belief Networks that is the paper chooses to fix their weights after each autoencoder is trained and becomes the training weights of the next autoencoder. For instance, the weights acquired by training the autoencoder of 773 nodes to 600 nodes are then used to set the weights of the next autoencoder on the stack (600 nodes $\rightarrow$ 400 nodes $\rightarrow$ 600 nodes). In our approach, we initially trained each layer of our Deep Belief Network and calculated the weights after the complete stack had been trained. The calculated weights are then used as the input for our next major component.
+    Using our implementation of earlier discussed Autocoders, we can convert given chess positions into a vector of values that represent the high-level features of that given position. In the Deep Chess paper, the researchers break up their neural network into two major components, the Deep Belief Network and Deep Chess. The Deep Belief Network is based on stacked autoencoders that are trained using layer-wise unsupervised training. The autoencoders discussed above are used to create 5 layers of nodes that begin with an input of 773 nodes and are encoded to 100 nodes \cite{deepchess}. Our structure is inspired by this network however, our input data consist of 69 nodes and is encoded down to 10 nodes. A major difference between both of our Deep Belief Networks that is the paper chooses to fix their weights after each autoencoder is trained and becomes the training weights of the next autoencoder. For instance, the weights acquired by training the autoencoder of 773 nodes to 600 nodes are then used to set the weights of the next autoencoder on the stack (600 nodes $\rightarrow$ 400 nodes $\rightarrow$ 600 nodes). In our approach, we initially trained each layer of our Deep Belief Network and calculated the weights after the complete stack had been trained. The calculated weights are then used as the input for our next major component.
 
     The next component of our Network is also the core component of our method and is called DeepChess. The DeepChess component consists of various layers of stacked autoencoders that enables our network to reach our goal. In the Deep Chess paper, the DeepChess network is created using two disjoint copies of the autoencoder stack that combined creates the Deep Belief Network. This trained Deep Belief Network uses its calculated weights as the initial weights for the supervised network that is created by four fully connected layers. The size of these layers takes an input of 400 nodes that lead into hidden layers of 200 nodes $\rightarrow$ 100 nodes $\rightarrow$ 2 nodes. In our approach we use a very similar structure as described above however, due to our autoencoder consisting less cumulative nodes, we change our DeepChess layers to accept 40 nodes and contains layers of 40 nodes $\rightarrow$ 20 nodes $\rightarrow$ 10 nodes $\rightarrow$ 2 nodes. These layers are also similarly trained using the ReLU activation function.
 
@@ -216,27 +218,43 @@
 
     \subsection{Training the Network}
 
-    Unlike the earlier autoencoders that are trained using an unsupervised method. The DeepChess network using a supervised training method that began by creating 1,000,000 random input pairs. These pairs consist of one position selected from a set of random positions that resulted in a White win and one position also selected by random from a set that resulted in a black win. These pairs can be randomly ordered as such (W, L) or (L, W) and are saved into a large data set. This method allows for our training pairs to contain new distinct pairs of positions with a very low chance of overlapping of the same positions to occur. These positions are then entered into the DeepChess network to identify which positions are more likely to win while being checked with the correct solution of each pair.  
+    Unlike the earlier autoencoders that are trained using an unsupervised method. The DeepChess network using a supervised training method that began by creating 1,000,000 random input pairs. These pairs consist of one position selected from a set of random positions that resulted in a White win and one position also selected by random from a set that resulted in a black win. These pairs can be randomly ordered as such (W, L) or (L, W) and are saved into a large data set. This method allows for our training pairs to contain new distinct pairs of positions with a very low chance of overlapping of the same positions to occur. These positions are then entered into the DeepChess network to identify which positions are more likely to win from the white player's perspective while being checked with the correct solution of each pair.  
 
     \subsection{Playing Moves}
 
-    \begin{enumerate}
-        \item Talk about move tree 
-        \item Talk about alphabeta
-        \item Talk about deep chess' alpha beta 
-        \item Talk about how we needed to use this as well 
-    \end{enumerate}
+    After we have a neural network that can take two positions as an input and give us an answer as to which board it believes is better for the white player, it will be time for us to put it to the test playing games and identifying positions. The way this will be done is using a search method, as discussed above, called alpha-beta pruning search. 
+
+    In order to accomplish this, we will have to find a way to generate all possible moves from a certain position, generate the resulting board state from each of those moves and compare them to each other. However, keeping alpha-beta pruning in mind, the way we will actually do this is more as described in the Deep Chess paper. Usually, an evaluation function gives a value for the board state, which is then compared to an alpha value, initialized to negative infinity. Alpha takes the maximum value between itself and the new board evaluation. We do the same thing with a beta value, which is initialized to positive infinity, and takes the minimum when comparing from black's perspective \cite{deepchess}. This approach allows us to ignore moves that are worse than the already known best position and not look further down certain branches more than we need to, optimizing our search to only branches that are promising. 
+
+    We will be using a slightly different version however, which is described in the Deep Chess paper. Instead of saving the alpha and beta as values, we will instead store the board position instead. This way, we can compare the alpha board state directly to the current move we're looking at and then choose whichever board state is better for white to replace alpha. In beta's case, we do the same thing but look at which board state is worse for white. 
     
     \section{Implementation}
 
     \subsection{Python-Chess}
 
-    \begin{enumerate}
-        \item Talk about the basics of the library
-        \item Talk about why we used it (it's used)
-        \item Parsing the lichess data
-        \item Code snippets?
-    \end{enumerate}
+    While working on trying to parse PGNs we managed to find a very convenient library called \href{https://python-chess.readthedocs.io/en/latest/}{python-chess}. Essentially, this library very conveniently manages almost every single thing that you would need for chess. It contains boards, pieces, functions for generating moves, functions for generating FENs from PGNs, inputting moves into a board, move stacks and so on.
+
+    In order to save us some time, we decided to use this library. Seeing as we needed to generate moves, parse PGNs into FENs and so on, this library was a perfect fit. In fact, when it comes to PGNs, this library when parsing through files with multiple PGNs, can perfect distinguish between different games and even stores the metadata in its own dictionary object that can be indexed. This made generating our dataset, as seen in figure ref{fig:python-chess}, a much simpler task than it would have been otherwise.
+
+    \begin{singlespace}
+        \begin{figure}[ht]
+            \centering
+            \caption{Parsing PGN Data}
+            \label{fig:python-chess}
+            \includegraphics[width=0.8\textwidth]{python-chess1.jpg}
+        \end{figure}
+    \end{singlespace}
+
+    On top of this, we had to learn which way we wanted to get our data from the lichess database. Seeing as the lichess database had a list of all their download links, we were able to use this to our advantage so that we didn't have to fully download onto our machines all of the data for an entire month that we wanted to use. In fact, because of this convenience, we were able to randomize what data from what months was accessed when creating our dataset, to try and create a more varied dataset. A look at the code is seen in figure \ref{fig:lichess-data-grab}
+
+    \begin{singlespace}
+        \begin{figure}[ht]
+            \centering
+            \caption{Collecting Lichess Game Data, Before Parsing}
+            \label{fig:lichess-data-grab}
+            \includegraphics[width=0.8\textwidth]{lichess-data-grab.jpg}
+        \end{figure}
+    \end{singlespace}
 
     \subsection{Tensorflow 2.0 and Keras}
 
@@ -275,11 +293,18 @@
 
     \subsection{Different Alpha-Beta Search}
 
-    \begin{enumerate}
-        \item Talk about why we chose alpha-beta over monte carlo (we can choose the depth of search easier)
-        \item Talk about what we had to change about alphabeta
-        \item Code snippets?
-    \end{enumerate}
+    As mentioned above, we used an alpha-beta search method for our computer to pick which move to play. However, we made some changes as defined in the Deep Chess paper in order to take into account the fact that we don't have an evaluation function, but rather a network that determines which of two boards is better from the white player's perspective. The modified alpha-beta search function is shown in figure \ref{fig:alphabeta}.
+
+    \begin{singlespace}
+        \begin{figure}[ht]
+            \centering
+            \caption{New AlphaBeta Search}
+            \label{fig:alphabeta}
+            \includegraphics[width=0.8\textwidth]{alphabeta.jpg}
+        \end{figure}
+    \end{singlespace}
+
+    In our version, netpredict returns both boards that were compared in an array of length 2. However, the board that is better for white is always in the $0^{th}$ position and the board that's better for black is always in the $1^{st}$ position. Also, instead of trying to find some initial board state that is good to count as negative infinity for white and positive infinity for black, we instead pass them into the function as the integers $-1$ and $1$. Then, we simply check to see if they've already been initialized before we compare them to another board state. 
     
     \section{Conclusions}
 
