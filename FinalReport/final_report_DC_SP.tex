@@ -310,12 +310,31 @@
 
     \subsection{Training Results}
 
-    \begin{enumerate}
-        \item Talk about autoencoder accuracy 
-        \item Talk about deepchess accuracy 
-        \item Talk about how awful the engine is 
-        \item Code snippets?
-    \end{enumerate}
+    Unforunately, due to a multitude of reasons that will be talked about in the next section, our neural network did not perform anywhere near as well as expected.
+
+    First of all, the final version of our autoencoder only achieved an accuracy of around 40-50\%. Even after we tried to improve it, we often even made it significantly worse, dropping as low as a 5\% accuracy on both test and training data. This was very unfortunate, but we moved on to the deep chess network regardless, hoping that maybe even with this very low accuracy that the network would still be able to properly distinguish somewhat whether a position is winning or not.
+
+    Sadly, this was not the case. As much as our deepchess neural network does achieve around a 60-63\% accuracy on both training and testing data, our later tests on playing moves were not very successful. Playing against very low ranked players proved that our engine essentially performed at the same level as if it were to pick a random move from the possibilities that were given to it. This meant our evaluation function, or even the autoencoder behind it, was very flawed. 
+
+    In fact, when tested with some positions, our engine often played one of the worse possible moves in the position, sacrificing pieces for no gain, or playing moves that appear completely random. In fact, in figures \ref{fig:kasp_before} and \ref{fig:kasp_after}, you can see the position before and after our engine makes a move, with its search depth limited to two.
+
+    \begin{singlespace}
+        \begin{figure}[ht]
+            \centering
+            \caption{Position Before Move}
+            \label{fig:kasp_before}
+            \includegraphics[width=0.5\textwidth]{kasp_pos_before.jpg}
+        \end{figure}
+    \end{singlespace}
+
+    \begin{singlespace}
+        \begin{figure}[ht]
+            \centering
+            \caption{Position After Move}
+            \label{fig:kasp_after}
+            \includegraphics[width=0.5\textwidth]{kasp_pos_after.jpg}
+        \end{figure}
+    \end{singlespace}
 
     \subsection{Possible Problems}
 
