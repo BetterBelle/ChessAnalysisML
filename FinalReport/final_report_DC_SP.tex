@@ -293,11 +293,18 @@
 
     \subsection{Different Alpha-Beta Search}
 
-    \begin{enumerate}
-        \item Talk about why we chose alpha-beta over monte carlo (we can choose the depth of search easier)
-        \item Talk about what we had to change about alphabeta
-        \item Code snippets?
-    \end{enumerate}
+    As mentioned above, we used an alpha-beta search method for our computer to pick which move to play. However, we made some changes as defined in the Deep Chess paper in order to take into account the fact that we don't have an evaluation function, but rather a network that determines which of two boards is better from the white player's perspective. The modified alpha-beta search function is shown in figure \ref{fig:alphabeta}.
+
+    \begin{singlespace}
+        \begin{figure}[ht]
+            \centering
+            \caption{New AlphaBeta Search}
+            \label{fig:alphabeta}
+            \includegraphics[width=0.8\textwidth]{alphabeta.jpg}
+        \end{figure}
+    \end{singlespace}
+
+    In our version, netpredict returns both boards that were compared in an array of length 2. However, the board that is better for white is always in the $0^{th}$ position and the board that's better for black is always in the $1^{st}$ position. Also, instead of trying to find some initial board state that is good to count as negative infinity for white and positive infinity for black, we instead pass them into the function as the integers $-1$ and $1$. Then, we simply check to see if they've already been initialized before we compare them to another board state. 
     
     \section{Conclusions}
 
