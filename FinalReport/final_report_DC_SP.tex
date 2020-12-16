@@ -232,12 +232,29 @@
 
     \subsection{Python-Chess}
 
-    \begin{enumerate}
-        \item Talk about the basics of the library
-        \item Talk about why we used it (it's used)
-        \item Parsing the lichess data
-        \item Code snippets?
-    \end{enumerate}
+    While working on trying to parse PGNs we managed to find a very convenient library called \href{https://python-chess.readthedocs.io/en/latest/}{python-chess}. Essentially, this library very conveniently manages almost every single thing that you would need for chess. It contains boards, pieces, functions for generating moves, functions for generating FENs from PGNs, inputting moves into a board, move stacks and so on.
+
+    In order to save us some time, we decided to use this library. Seeing as we needed to generate moves, parse PGNs into FENs and so on, this library was a perfect fit. In fact, when it comes to PGNs, this library when parsing through files with multiple PGNs, can perfect distinguish between different games and even stores the metadata in its own dictionary object that can be indexed. This made generating our dataset, as seen in figure ref{fig:python-chess}, a much simpler task than it would have been otherwise.
+
+    \begin{singlespace}
+        \begin{figure}[ht]
+            \centering
+            \caption{Parsing PGN Data}
+            \label{fig:python-chess}
+            \includegraphics[width=0.8\textwidth]{python-chess1.jpg}
+        \end{figure}
+    \end{singlespace}
+
+    On top of this, we had to learn which way we wanted to get our data from the lichess database. Seeing as the lichess database had a list of all their download links, we were able to use this to our advantage so that we didn't have to fully download onto our machines all of the data for an entire month that we wanted to use. In fact, because of this convenience, we were able to randomize what data from what months was accessed when creating our dataset, to try and create a more varied dataset. A look at the code is seen in figure \ref{fig:lichess-data-grab}
+
+    \begin{singlespace}
+        \begin{figure}[ht]
+            \centering
+            \caption{Collecting Lichess Game Data, Before Parsing}
+            \label{fig:lichess-data-grab}
+            \includegraphics[width=0.8\textwidth]{lichess-data-grab.jpg}
+        \end{figure}
+    \end{singlespace}
 
     \subsection{Tensorflow 2.0 and Keras}
 
